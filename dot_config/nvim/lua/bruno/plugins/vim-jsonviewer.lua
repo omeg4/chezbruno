@@ -1,0 +1,1 @@
+return { "bbrtj/vim-jsonviewer" }

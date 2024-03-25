@@ -1,0 +1,3 @@
+slides -Zz. \
+-D 10 \
+--title "%a %n"

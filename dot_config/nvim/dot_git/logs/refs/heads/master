@@ -1,0 +1,6 @@
+0000000000000000000000000000000000000000 38127bf7aa3e5dfc868c6ec397cce97087d33d1b Matt <matthew.brunetti28@gmail.com> 1704477660 -0500	clone: from github.com:omeg4/neobruno.git
+38127bf7aa3e5dfc868c6ec397cce97087d33d1b 0fadf5ebc2b61cdd91b38e36b6217e1bb446ab74 Matt <matthew.brunetti28@gmail.com> 1706027502 -0500	commit: trying to work with obsidian.nvim
+0fadf5ebc2b61cdd91b38e36b6217e1bb446ab74 4cb9cecae0e4dd1add38c3381e8aaed7d6a2defa Matt <matthew.brunetti28@gmail.com> 1706034832 -0500	commit: nvim-dap initial setup
+4cb9cecae0e4dd1add38c3381e8aaed7d6a2defa 27e681551f8b4eeff7faecc52a558f01ec14b2d3 Matt <matthew.brunetti28@gmail.com> 1707851724 -0500	commit: nvim-dap + lua = PoB dev?
+27e681551f8b4eeff7faecc52a558f01ec14b2d3 cdf606bb3ffa154fb6881b13e4677b50003ac639 Matt <matthew.brunetti28@gmail.com> 1708719912 -0500	commit: attempted to setup lua debugging idk
+cdf606bb3ffa154fb6881b13e4677b50003ac639 58224f225bb7ade683c922f8f0c9a5f0ea5ced36 Matt <matthew.brunetti28@gmail.com> 1711375336 -0400	commit: copilot+cmp, obsidian

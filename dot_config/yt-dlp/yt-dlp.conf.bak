@@ -1,0 +1,38 @@
+# standard output template
+-o "%(uploader,creator,channel,uploader_id,channel_id)s__%(title,alt_title,id,display_id)s__DL.%(ext)s"
+
+# Use temp DL directory on SSD
+-P "temp:/home/bruno/tmpydl/"
+-P "home:/mnt/sgext/stuff/"
+
+# keep a download archive
+--download-archive '/mnt/sgext/info/dlrx.txt'
+
+# cookies
+--cookies '/mnt/sgext/info/cookies.txt'
+
+#-u 'smutthrowaway1234'
+#-p 'flcutters28'
+
+-f 'b[height<=720][vbr<=3000]/b[vbr<=3000]/b[height>=540]/b'
+# -f 'best[height=720]/best'
+# -f 'b[vbr<=3000]/best'
+# -f 'b[height<=720]/best'
+# -s +size,+br,+res,+fps
+
+--no-mtime
+--no-progress
+--restrict-filenames
+--mark-watched
+--add-metadata
+-c
+
+# Add rate limiting to --retries for e.g. playlist downloads
+--retries='4'
+--fragment-retries='10'
+--file-access-retries='4'
+--retry-sleep linear=5:120:5
+--retry-sleep fragment:exp=1:20
+--retry-sleep file_access:linear=60:300:30
+--break-per-input
+--abort-on-unavailable-fragment

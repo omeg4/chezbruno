@@ -1,0 +1,14 @@
+toggle_pause 3
+toggle_menu S-3 C-3
+
+prev_img 5
+next_img 4
+
+zoom_in C-5
+zoom_out C-4
+
+# unbind these from C-1/C-2
+blur
+rotate
+
+zoom 2 C-1

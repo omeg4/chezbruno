@@ -1,0 +1,13 @@
+next_img  l
+prev_img  h
+zoom_out  j
+zoom_in   k
+
+scroll_up     K
+scroll_down   J
+scroll_left   H
+scroll_right  L
+
+toggle_pause  p space
+toggle_info   i
+quit          O o q
