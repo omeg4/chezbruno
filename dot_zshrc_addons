@@ -1,0 +1,19 @@
+source ~/.zshrc_aliases
+source ~/.zshrc_secrets
+
+# The Node.js install script told me to do this but I don't think this works with nvim
+source /usr/share/nvm/init-nvm.sh
+
+# Default apps
+export BROWSER="vivaldi-snapshot"
+
+# Deno PATH
+export DENO_INSTALL="/home/bruno/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+
+# Ruby PATH
+export PATH="$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH"
+
+# User local bin
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.npm-global/bin:$PATH"

@@ -1,0 +1,12 @@
+[user]
+	email = matthew.brunetti28@gmail.com
+	name = Matt
+[credential]
+	helper = /usr/bin/git-credential-manager
+	credentialStore = secretservice
+[credential "https://github.com"]
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://dev.azure.com"]
+	useHttpPath = true

@@ -1,0 +1,5 @@
+# pack-refs with: peeled fully-peeled sorted 
+fa8d847ce707ed26087d78cacd4bc82ffccf2d0f refs/remotes/origin/js-jasmine-clean
+075e97b6b6c1f981a15f7a887d7c006141fccbfc refs/remotes/origin/master
+8084d02b6176358862c7307c817255b7b574994d refs/remotes/origin/revert-529-master
+4ed409154bcaa32fba6fd153cc0c915e44982872 refs/tags/1.0.0

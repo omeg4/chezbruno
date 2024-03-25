@@ -1,0 +1,4 @@
+28e7f0376bcb661afa9e3b8b352152b981f5eda3		branch 'release' of https://github.com/neoclide/coc.nvim
+29c4afbc045a192ce6996b8f0d6250fd30f889d4	not-for-merge	branch 'feat/lineAt' of https://github.com/neoclide/coc.nvim
+759cd81bb36da62ae94777fde8d5176092114b2f	not-for-merge	branch 'feat/use-ts-hi-group' of https://github.com/neoclide/coc.nvim
+77fb25aa6bd48061f78b91b99c10981843c9949a	not-for-merge	branch 'master' of https://github.com/neoclide/coc.nvim

@@ -1,0 +1,17 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[submodule]
+	active = .
+[remote "origin"]
+	url = https://github.com/davidhalter/jedi.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[submodule "jedi/third_party/typeshed"]
+	url = https://github.com/davidhalter/typeshed.git
+[submodule "jedi/third_party/django-stubs"]
+	url = https://github.com/davidhalter/django-stubs

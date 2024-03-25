@@ -1,0 +1,26 @@
+# Probably had to do this for nvim or smth
+## 01/01/2024
+# Just tried `source ~/.profile` from Terminal and got an error here so I guess...
+#   a) this line isn't necessary
+#   b) ~/.profile is not currently sourced during awesome startup
+# . "$HOME/.cargo/env"
+
+# 01/01/2024
+# Validate when ~/.profile is sourced?
+touch "$HOME/.test_source_dotprofile"
+
+# Update $PATH for Rofi launcher
+export PATH="$HOME/.local/share/applications/:$HOME/Documents/.allmystuff/bin/:$PATH"
+
+export WINEPREFIX="/home/bruno/.wine/"
+
+export BROWSER="vivaldi-snapshot"
+export EDITOR="nvim"
+
+# 12/29/23
+## Add Perl to PATH and define other Env vars
+# PATH="$HOME/perl5/bin${PATH:+:${PATH}}"; export PATH;
+# PERL5LIB="/home/bruno/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+# PERL_LOCAL_LIB_ROOT="/home/bruno/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+# PERL_MB_OPT="--install_base \"/home/bruno/perl5\""; export PERL_MB_OPT;
+# PERL_MM_OPT="INSTALL_BASE=/home/bruno/perl5"; export PERL_MM_OPT;

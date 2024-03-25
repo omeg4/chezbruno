@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+
+setxkbmap -option caps:super &
+xset -dpms
+# xset s off
+
+xset +fp "$HOME/.local/share/fonts/"
+
+export BROWSER="vivaldi-snapshot"
+
+# solaar &
+# surfshark &
+# blueman-applet &
+# clipman &
+# dropbox &

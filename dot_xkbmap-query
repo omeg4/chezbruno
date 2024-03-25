@@ -1,0 +1,18 @@
+Setting verbose level to 10
+locale is C
+Trying to load rules file ./rules/evdev...
+Trying to load rules file /usr/share/X11/xkb/rules/evdev...
+Success.
+Applied rules from evdev:
+rules:      evdev
+model:      pc105
+layout:     us
+Trying to build keymap using the following components:
+keycodes:   evdev+aliases(qwerty)
+types:      complete
+compat:     complete
+symbols:    pc+us+inet(evdev)
+geometry:   pc(pc105)
+rules:      evdev
+model:      pc105
+layout:     us

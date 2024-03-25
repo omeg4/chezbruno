@@ -1,0 +1,386 @@
+# Load Antigen
+# source "$HOME/antigen.zsh"
+
+# Load Antigen Configuration
+# antigen init "$HOME/.antigenrc"
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+# TESTING MYGITWATCH
+
+# Set name of the theme to load. Optionally, if you set this to "random"
+# it'll load a random theme each time that oh-my-zsh is loaded.
+# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+# ZSH_THEME="jonathan"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+# ZSH_THEME="pygmalion"
+
+# Stuff for tmux o-m-zsh plugin (UNCOMMENT THIS TO BREAK NVIM COLORS IN TMUX)
+# ZSH_TMUX_AUTOSTART="true"
+
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time os_icon context vi_mode virtualenv dir vcs newline)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time root_indicator background_jobs disk_usage)
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(
+	# safe-paste
+	# git-remote-branch
+	git git-prompt github gitfast git-extras svn-fast-info
+	archlinux common-aliases emoji vi-mode history lol systemd
+	compleat dircycle extract
+	fasd #https://github.com/clvv/fasd
+	python pip pylint virtualenv # virtualenvwrapper #pyenv
+	tmux tmuxinator
+	themes
+	# vundle
+	# geeknote
+	zsh-navigation-tools # See extra options below
+	per-directory-history # Ctrl+g
+	# zsh-autosuggestions zsh-syntax-highlighting
+	colored-man-pages
+	command-not-found
+	npm
+	)
+
+  export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin:/usr/lib/jvm/default/bin"
+  export PATH="$HOME/.gem/ruby/2.7.0/bin:/usr/local/Wolfram:$HOME/.pyenv/bin:$HOME/Documents/.allmystuff/bin:$PATH"
+  export PATH="$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH"
+  export ATLAS="$HOME/.local/lib/libatlas.a"
+  export BLAS="$HOME/.local/lib/libptf77blas.a"
+  export LAPACK="$HOME/.local/lib/liblapack.a"
+  export PYENV="$HOME/.pyenv/"
+  export WORKON_HOME="$HOME/.venvs/"
+  export EDITOR="/usr/bin/nvim"
+  # export JUPYTERLAB_DIR="$HOME/Documents/.allmystuff/jupy_dir/"
+
+  export COLORS="$HOME/.vim/colors/aela.vim\n$HOME/.local/share/xfce4/terminal/colorschemes/aela_sunsets\n$HOME/.Xresources"
+
+  export BBKP='/mnt/sgext/brunobkp/home/bruno/'
+  # alias ecolors="nvim $(echo $COLORS)"
+
+# Path to your oh-my-zsh installation.
+	export ZSH=$HOME/.oh-my-zsh
+	source $ZSH/oh-my-zsh.sh
+	# source ~/.tmuxinator/tmuxinator/completion/tmuxinator.zsh
+	source ~/.otheraliasesrc
+#
+  # Source font-awesome .sh files
+  # source /usr/share/fonts/awesome-terminal-fonts/devicons-regular.sh
+  # source /usr/share/fonts/awesome-terminal-fonts/fontawesome-regular.sh
+  # source /usr/share/fonts/awesome-terminal-fonts/octicons-regular.sh
+  # source /usr/share/fonts/awesome-terminal-fonts/pomicons-regular.sh
+
+  # Doing this to help in tmux
+  # export TERM=xterm-256color-italic
+  # export TERM=screen-256color
+  # eval "$(pyenv init -)"
+  # eval "$(pyenv virtualenv-init -)"
+
+# Powerline all the things!
+if [[ -r $HOME/.local/lib/python3.6/site-packages/powerline/bindings/zsh/powerline.zsh ]]; then
+    source $HOME/.local/lib/python3.6/site-packages/powerline/bindings/zsh/powerline.zsh
+fi
+
+# Stuff for zsh-navigation-tools:
+# Ctrl+R for multi-word (word1+word2+...) command history searcher
+# Ctrl+F for 'fix' mode...				  allows for 1 or 2 errors in search results (apparently that's default?)
+# Ctrl+E while in Ctrl-R for history editing? and somehow to keep private bookmarks?
+# Ctrl+A for 		""					  directory history seacher
+# Ctrl+Y for 		""					  program killing searcher
+zle -N znt-cd-widget
+bindkey "^H" znt-cd-widget
+zle -N znt-kill-widget
+bindkey "^Y" znt-kill-widget
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='nvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/rsa_id"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+
+# GIT BARE STUFF
+# (jeez, that sounds dirty)
+ alias config='/usr/bin/git --git-dir=$HOME/.myconf --work-tree=$HOME'
+ alias coma='pkill compton;sleep 1;compton'
+
+ alias sumohdds='sudo mount /dev/sde2 /mnt/winhdd && sudo mount /dev/sdg4 /mnt/winc && sudo mount /dev/sdc1 /mnt/sgext'
+
+ alias syre='systemctl reboot'
+
+ alias mediastats='mediainfo --Output="General;%FileSize/String% -- %Duration/String%\n%OverallBitRate/String%: Min: %OverallBitRate_Minimum/String% | Max: %OverallBitRate_Maximum/String%"'
+
+ alias nvim2='nvim -u ~/.config/nvim2/init.vim'
+ alias ezz="nvim ~/.zshrc"
+ alias envim='nvim ~/.config/nvim/init.vim'
+ alias eozh="nvim ~/.oh-my-zsh"
+ alias ear="nvim ~/.config/awesome/rc.lua"
+
+ alias car="awesome -k ~/.config/awesome/rc.lua"
+
+ alias ls='lsd'
+ alias ls1='lsd -1'
+ alias ll='lsd -alhF'
+ alias la='lsd -ahF'
+ alias l='lsd -F'
+ alias lt='lsd -alth'
+ alias lr='lsd -alR --depth 2'
+ alias lrr='lsd -alR --depth 3'
+
+ alias cleanbin='cd ~/.local/share/Trash && rm -rf files/* && cd ~'
+
+ alias du1='du -hc -d 1'
+ alias dux1='du -hcx -d 1'
+
+ alias adoberead='wine /mnt/winc/Program\ Files\ \(x86\)/Adobe/Reader\ 11.0/Reader/AcroRd32.exe'
+
+ alias rezsh='source ~/.zshrc'
+ alias rexmres='xrdb -merge ~/.Xresources'
+
+ alias runfort="gfortran -o $1 $1.f90 ; ./$1"
+
+ alias takeover='tmux attach -a'
+ alias workpaper1='cd ~/tex-git/tex-git/paper1-RT4; nvim draft1-RT4.tex'
+
+ alias ytdl='youtube-dl --extract-audio --audio-format flac --audio-quality 0 --prefer-ffmpeg'
+ alias phdl='youtube-dl --min-filesize 40m --restrict-filenames --newline --no-mtime -f "bestvideo[ext=mp4]/best" -o'
+
+ alias rf='nvim -R /usr/share/fonts/misc/fonts.alias'
+
+ alias chist='cat ~/.{bash,zsh}_history'
+
+ alias cddr='cd ~/Documents/resume'
+
+
+ alias cdt='cd ~/tex-git/'
+ alias cdts='cd ~/tex-git/sige/'
+ alias cdtsp='cd ~/tex-git/sige/direct_excitons'
+ alias cdtp='cd ~/tex-git/phosopt'
+ alias cdtd='cd ~/tex-git/dissertation'
+
+ alias cdc='cd ~/cluster/'
+ alias cdcs='cd ~/cluster/sigesn/'
+ alias cdcph='cd ~/cluster/phos/'
+ alias cdct='cd ~/cluster/tmdc/'
+ alias cdcd='cd ~/cluster/diss/'
+
+ alias cdcogg='cd ~/.config/glances/graphs/'
+ alias cdcog='cd ~/.config/glances/'
+ alias cdcon='cd ~/.config/nvim/'
+ alias cdcoa='cd ~/.config/awesome/'
+ alias cdmdd='cd ~/mydots/desktop/'
+ alias cdcor='cd ~/.config/ranger/'
+
+ alias cdsc='cd ~/datadrop/SteamLibrary/steamapps/common'
+ alias cdscxcom2home='cd ~/datadrop/SteamLibrary/steamapps/common/XCOM\ 2/'
+ alias cdswxcom2mods='cd ~/datadrop/SteamLibrary/steamapps/workshop/content/268500'
+ alias cdpoecompat='cd $HOME/.local/share/Steam/steamapps/compatdata/238960/pfx/drive_c/users/steamuser/My\ Documents/My\ Games/Path\ of\ Exile'
+ alias pob='wine $HOME/poedev/PathOfBuilding/runtime/Path{space}of{space}Building.exe > /dev/null 2>&1 &'
+
+ alias gsu='git status -u no'
+
+ alias rsr='redshift -o 2700K'
+ alias rsx='redshift -x'
+
+ alias Y='yay'
+ alias YY='yay --noanswerclean --noanswerdiff --noansweredit --noanswerupgrade --noremovemake'
+ alias yst='yay -Ps'
+
+ # aliases for switching between desktop modes w/ xrandr
+ # alias xr
+
+ alias pinus='pip install --user'
+ alias p2inus='pip2 install --user'
+ # Turns out this is bad practice, instead use jazzband/pip-tools [Git repo]
+ # alias piusup3='pip install --user -U $(pip freeze | awk "{split($0, a, '=='); print a[1]}")'
+
+ alias nvsmi='nvidia-smi'
+
+ alias cdmma='cd ~/.local/bin/mathematica'
+
+ alias rmtexaux='rm -f *.aux *.bbl *.blg *.fdb_latexmk *.fls *.log *.out *.synctex.gz'
+ alias feraslish='feh -z --scale-down -D10 {*.jpg,*.png}'
+
+ alias pygencl='cd ~/Documents/pygencl && python3 gencl.py'
+
+ # alias poedir='cd $HOME/datadrop/SteamLibrary/steamapps/compatdata/238960/pfx/drive_c/users/steamuser/My\ Documents/My\ Games/Path\ of\ Exile'
+
+ # aura aliases
+ alias A='aura -Aa'
+ alias aa='aura -A'
+ alias ai='aura -Ai'
+ alias as='aura -As'
+ alias aup='aura -Akuax'
+ alias aupg='aura -Au'
+ alias ass='aura -S'
+
+ alias ab='aura -B'
+ alias abr='aura -Br'
+
+ alias al='aura -L'
+ alias ali='aura -Li'
+ alias als='aura -Ls'
+
+ alias ao='aura -O'
+ alias aox='aura -Oj'
+
+ # alias youtube-dl='/usr/local/bin/youtube-dl'
+
+ function aupdl () {
+	 youtube-dl -x --external-downloader axel --external-downloader-args '-n 10 -a' --audio-format "m4a" --audio-quality 1 --add-metadata -o "%(title)s__%(playlist)s.%(ext)s" "$1" > /dev/null 2>&1 &
+ }
+
+ function auvdl () {
+	 youtube-dl -x --external-downloader axel --external-downloader-args '-n 10 -a' --audio-format "m4a" --audio-quality 1 --add-metadata -o "%(title)s.%(ext)s" "$1" > /dev/null 2>&1 &
+ }
+
+ # so, this doesn't work in terms of parsing inputs
+ # alias echotest="echo $2 && echo $1"
+
+ alias minixev="xev | grep -A2 --line-buffered '^KeyRelease' | sed -n '/keycode /s/^.*keycode \([0-9]*\).* (.*, \(.*\)).*$/\1 \2/p'"
+
+ alias jarme="java -jar $HOME/Downloads/ripme.jar"
+
+ function fphdl(){
+	youtube-dl --external-downloader axel --external-downloader-args '-n 10 -a' --download-archive '/mnt/sgext/info/dlrx.txt' --retries='infinite' --cookies '/mnt/sgext/info/cookies.txt' -u 'smutthrowaway1234' -p 'flcutters28' -f 'best[height=720]/best' -o '/mnt/sgext/stuff/%(uploader)s__%(title)s__PHPDL.%(ext)s' --no-mtime -c --no-progress --restrict-filenames --mark-watched --add-metadata $1 NUL &
+ }
+
+function aphdl() {
+	youtube-dl --external-downloader axel --external-downloader-args '-n 10 -a' --retries='infinite' --cookies '/mnt/sgext/info/cookies.txt' -u 'smutthrowaway1234' -p 'flcutters28' -f 'best[height=720]/best' -o '/mnt/sgext/stuff/%(uploader)s__%(title)s__PHPDL.%(ext)s' --no-mtime -c --no-progress --restrict-filenames --mark-watched --add-metadata $1 &
+}
+
+function byphdl() {
+	youtube-dl --retries='infinite' -f 'best[height=720]/best' -o '/mnt/sgext/stuff/young-devotion_mdh-to%(autonumber)s.%(ext)s' --no-mtime -c --restrict-filenames -i -a $1
+}
+
+function baphdl() {
+	youtube-dl --external-downloader axel --external-downloader-args '-n 10 -a' --retries='infinite' -f 'best[height=720]/best' -o 'young-devotion_mdh-to%(autonumber)s.%(ext)s' --autonumber-start 201 --no-mtime -c --no-progress --restrict-filenames -i -a $1
+}
+
+function sphdl() {
+	youtube-dl \
+		--external-downloader axel --external-downloader-args '-n 10 -a' \
+		--retries='infinite' \
+		-f 'best[height=720]/best' \
+		-o '/mnt/sgext/stuff/young-devotion_mdhto-dl%(autonumber)s.mp4' \
+		--no-mtime --no-continue --no-progress --restrict-filenames $1 \
+		|| \
+		youtube-dl \
+		--retries='infinite' \
+		-f 'best[height=720]/best' \
+		-o '/mnt/sgext/stuff/young-devotion_mdhto-dl%(autonumber)s.mp4' \
+		--no-mtime --no-continue --no-progress --restrict-filenames $1 &
+}
+		# --exec 'mv -f --backup=t {} young-devotion_mdhto.mp4' \
+
+ function vidreso(){
+	 mediainfo $1 | egrep 'Height|Width' | awk -F : '{ print $2 }'
+ }
+
+ function vidcrop() {
+	ffmpeg -i $1 -filter:v "crop=-2:$2:$3:$4" $1'_cropped'
+ }
+
+ # alias add2dots=''
+
+function ytvidbg {
+	youtube-dl $1 > /dev/null 2>&1 &
+}
+
+function mvnewpaper () {
+	mv $@ ~/Dropbox/Berman-Research/Papers/New
+}
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Better history search w/ arrow keys
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# source /usr/share/nvm/init-nvm.sh
+export NVS_HOME="$HOME/.nvs"
+[ -s "$NVS_HOME/nvs.sh" ] && . "$NVS_HOME/nvs.sh"
+
+PATH="/home/bruno/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/bruno/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/bruno/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/bruno/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/bruno/perl5"; export PERL_MM_OPT;
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

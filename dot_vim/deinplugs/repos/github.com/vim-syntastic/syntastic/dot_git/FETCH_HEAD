@@ -1,0 +1,3 @@
+2c4b33f6e6679fb5f3824d9cd38d4813c71a19a3		branch 'master' of https://github.com/vim-syntastic/syntastic
+55d4ce87aee3359c0c4284c26cb2f61196b2758b	not-for-merge	branch 'loclist_state' of https://github.com/vim-syntastic/syntastic
+a48916ce60b19d51eb0fc7fccb202f2d457c4253	not-for-merge	branch 'sphinx_checker' of https://github.com/vim-syntastic/syntastic

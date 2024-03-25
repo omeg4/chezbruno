@@ -1,0 +1,49 @@
+alias syre='systemctl reboot'
+alias lsblko='lsblk -o NAME,LABEL,PARTLABEL,UUID'
+alias ls='lsd'
+alias ll='lsd -al'
+alias lt='lsd -alt'
+alias rezsh="source $HOME/.zshrc"
+alias NLL='2>&1 /dev/null'
+alias NVL='> /dev/null 2>&1'
+
+# alias pob="wine $HOME'/Documents/Path of Building Community/Path of Building.exe'"
+
+function apt () {
+  eval "Awakened-PoE-Trade-3.22.10003.AppImage" > /dev/null 2>&1 &
+}
+
+function pob () {
+  # SUFFIX="2>&1 /dev/null"
+  SUFFIX="> /dev/null 2>&1"
+  case "$1" in
+    -v) 
+      SUFFIX=""
+      ;;
+  esac
+  eval "wine $HOME'/Documents/Path of Building Community/Path of Building.exe'" > /dev/null 2>&1 &
+}
+
+function backup_nvim () {
+  SUFFIX="$1"
+  mv $HOME/.config/nvim "$HOME/.config/nvim.$SUFFIX.bak"
+  mv $HOME/.local/share/nvim "$HOME/.local/share/nvim.$SUFFIX.bak"
+  mv $HOME/.local/state/nvim "$HOME/.local/share/nvim.$SUFFIX.bak"
+  mv $HOME/.cache/nvim "$HOME/.cache/nvim.$SUFFIX.bak"
+}
+
+function restore_nvim () {
+  SUFFIX="$1"
+  # TODO: Handle existing nvim dirs and/or warn if exists
+  mv "$HOME/.config/nvim.$SUFFIX.bak" $HOME/.config/nvim
+  mv "$HOME/.local/share/nvim.$SUFFIX.bak" $HOME/.local/share/nvim
+  mv "$HOME/.local/share/nvim.$SUFFIX.bak" $HOME/.local/state/nvim
+  mv "$HOME/.cache/nvim.$SUFFIX.bak" $HOME/.cache/nvim
+}
+
+alias cdpoe="cd /home/bruno/.steam/steam/steamapps/common/Path\ of\ Exile"
+alias cdpoedev="cd $HOME/poedev/"
+# alias cddoe="cd $HOME/poedev/DashOfExile/"
+function cddoe () {
+  cd $HOME/poedev/DashOfExile/ && pipenv shell
+}

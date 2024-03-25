@@ -1,0 +1,10 @@
+version: '{build}'
+configuration:
+- MINGW_64
+- MINGW_32
+install: []
+build_script:
+- call .ci\build.bat
+artifacts:
+- path: build/Neovim.zip
+- path: build/Neovim.exe
