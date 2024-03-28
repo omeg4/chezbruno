@@ -2,7 +2,7 @@ if status is-interactive
   # Commands to run in interactive sessions can go here
 
   # 12/29/23 Update $PATH from ~/.zshrc
-  fish_add_path -U "$HOME/.local/share/applications" "$HOME/Documents/.allmystuff/bin" "$HOME/perl5/bin" "$HOME/.luarocks/bin" "$HOME/.local/share/bob/nvim-bin"
+  fish_add_path -U "$HOME/.local/share/applications" "$HOME/Documents/.allmystuff/bin" "$HOME/perl5/bin" "$HOME/.luarocks/bin" "$HOME/.local/share/bob/nvim-bin" "$HOME/.pyenv"
 
   # `pj` plugin config - define project directories
   set -U PROJECT_PATHS "HOME/poedev" "HOME/poedev/DashOfExile/" "HOME/Documents/.allmystuff/bin/" "HOME/.config/awesome" "HOME/.config/fish" "HOME/.config/nvim" "HOME/.config/wezterm/"
@@ -21,3 +21,5 @@ end
 # starship init fish | source
 
 zoxide init fish | source
+
+source "$HOME/.asdf/asdf.fish"
