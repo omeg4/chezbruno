@@ -6,6 +6,7 @@ abbr -a syre 'systemctl reboot'
 abbr -a sypo 'systemctl poweroff'
 
 # `cd ...` shortcuts
+abbr -a cdchez 'cd $HOME/.local/share/chezmoi/'
 abbr -a cdconf 'cd $HOME/.config/'
 abbr -a cdmybin 'cd $HOME/Documents/.allmystuff/bin/'
 abbr -a cddoe 'cd $HOME/poedev/DashOfExile && pipenv shell'
