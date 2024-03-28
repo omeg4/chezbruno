@@ -1,0 +1,46 @@
+map gxxx	cd /mnt/sgext/stuff
+map gxxv	cd /mnt/sgext/allpics/vgcaps
+map gxxs	cd /mnt/sgext/allpics/scmd
+map gxxo	cd /mnt/sgext/OnlyFans
+
+map zxmb	filter madelyn.marie|capri.cav|lexi.luna|reena.sky
+map zxmy	filter capri.cav|britney.amber|samantha.saint|kagney.l.nn..arter|alix.lynx
+map zxhf	filter ariana.marie|aidra.fox|ava.dalush|eliza.ibarra|savannah.six|dani.daniels|mia.malkova|clea.gaultier|ashley.adams|lily.love|molly.jane|whitney.westgate|april.o.?neil|victoria.rae.black|lily.adams|liya.silver|stacy.cruz|irina.bruni|elena.grimaldi|natalia.starr|skye.west|tiffany.thompson|alex.black|alexis.adams|allie?.rae
+map zxph	filter babiqueen|luxury.?girl|dreaminskies|dick.?for.?lily|nicole.?sucks.?cock|little.?buff.?babe|my.?sweet.?apple|diana.daniels|evexadam|reislin|lolly.?lips|cock2squirt|sexheroine|no.?face.?girl|april.eighteen|bedgasm|behindthemaskk|bootysothick|blancnoir|carry.?light|chi.?girl|claudia.?class|danika.?mori|diana.?n.?daniel|dulce.viera|fiamurr|kate.pie|kalibabe|kriss.kiss|rico.hugi|guesswhox2|leolulu|lucaxmia|mini.diva|miss.lexa|morning.pleasure|not.soam|not.?so.?amateur|sextwoo|louise.?et.?martin|sola.?zola|sparks.?go.?wild|horny.?hiking|spring.?bloom|sweet.?bunny|tinna.?angel|victoria.?loves.?me|young.?devotion|alexxxa.?jones|alice.?redlips
+
+map zxc		filter darlene|lauri|lsoko|jboss|shaymar
+map .xc		filter_stack add name darlene|lauri|lsoko|jboss|shaymar
+
+map .xv		filter_stack add name vert-vid
+map .xV		filter_stack add name vert-vid; filter_stack add not
+
+map Al		eval fm.open_console('rename ' + fm.thisfile.relative_path.replace("%", "%%"))
+
+# chain setinregex regex="/mnt/sgext/OnlyFans/\.sites/OnlyFans" sort=size; setinregex regex="/mnt/sgext/OnlyFans/\.sites/OnlyFans" sort_reverse=false; setinregex regex="/mnt/sgext/OnlyFans/\.sites/OnlyFans" autoupdate_cumulative_size true
+chain setlocal path="/mnt/sgext/OnlyFans/\.sites/OnlyFans/Videos*" sort=size; setlocal path="/mnt/sgext/OnlyFans/\.sites/OnlyFans/Videos" sort_reverse=false; setlocal path="/mnt/sgext/OnlyFans/\.sites/OnlyFans/Videos" autoupdate_cumulative_size true
+
+setlocal path=/mnt/sgext/torr/complete sort_directories_first false
+# setlocal path=/mnt/sgext/torr/complete linemode sizemtime
+
+map bg		chain shell -s ln -s -t /mnt/sgext/tierlinks/godtier %p; mark_files all=True val=False; move down=1
+map bs		chain shell -s ln -s -t /mnt/sgext/tierlinks/stier %p; mark_files all=True val=False; move down=1
+map ba		chain shell -s ln -s -t /mnt/sgext/tierlinks/atier %p; mark_files all=True val=False; move down=1
+map bb		chain shell -s ln -s -t /mnt/sgext/tierlinks/btier %p; mark_files all=True val=False; move down=1
+map bc		chain shell -s ln -s -t /mnt/sgext/tierlinks/ctier %p; mark_files all=True val=False; move down=1
+map bd		chain shell -s ln -s -t /mnt/sgext/tierlinks/dtier %p; mark_files all=True val=False; move down=1
+
+map bG		chain shell -s ln -s -t /mnt/sgext/tierlinks/godtier %p; mark_files all=True val=False; move up=1
+map bS		chain shell -s ln -s -t /mnt/sgext/tierlinks/stier %p; mark_files all=True val=False; move up=1
+map bA		chain shell -s ln -s -t /mnt/sgext/tierlinks/atier %p; mark_files all=True val=False; move up=1
+map bB		chain shell -s ln -s -t /mnt/sgext/tierlinks/btier %p; mark_files all=True val=False; move up=1
+map bC		chain shell -s ln -s -t /mnt/sgext/tierlinks/ctier %p; mark_files all=True val=False; move up=1
+map bD		chain shell -s ln -s -t /mnt/sgext/tierlinks/dtier %p; mark_files all=True val=False; move up=1
+
+map bv		chain shell -s ln -s -t /mnt/sgext/arlinks/vert %p; mark_files all=True val=False; move down=1
+map bh		chain shell -s ln -s -t /mnt/sgext/arlinks/horz %p; mark_files all=True val=False; move down=1
+
+map bV		chain shell -s ln -s -t /mnt/sgext/arlinks/vert %p; mark_files all=True val=False; move up=1
+map bH		chain shell -s ln -s -t /mnt/sgext/arlinks/horz %p; mark_files all=True val=False; move up=1
+
+map bl		chain shell -s ln -s -t /mnt/sgext/stuff/oflinks/send0vv %p; shell -s echo $(date +"%%D %%R")\\t\\t%p >> /mnt/sgext/stuff/oflinks/send0vv/linklog.txt; mark_files all=True val=False; move down=1
+map bk		chain shell -s ln -s -t /mnt/sgext/stuff/oflinks/send0best %p; shell -s echo $(date +"%%D %%R")\\t\\t%p >> /mnt/sgext/stuff/oflinks/send0best/linklog.txt; mark_files all=True val=False; move down=1

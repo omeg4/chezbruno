@@ -1,7 +1,7 @@
 # Always ignore if present in existing folders
 .git/*
-*pycache*
-*site-?packages*
+**/__pycache__
+**/*site-?packages*
 .pyenv
 .venv
 *.png
