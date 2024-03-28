@@ -1,2 +1,5 @@
+{{- $choices := list "desktop" "framework" "thinkpad" -}}
+{{- $hosttype := promptChoice "Which system?" $choices -}}
 [data]
   email = "matthew.brunetti28@gmail.com"
+  hosttype = {{- $hosttype | quote -}}

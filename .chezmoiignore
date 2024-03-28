@@ -1,0 +1,39 @@
+# Always ignore if present in existing folders
+.git/*
+*pycache*
+*site-?packages*
+.pyenv
+.venv
+*.png
+*.jpe?g
+*.gif
+
+# Fedora/Laptop only
+# could also try -
+#   .chezmoi.fqdnHostname "fedora"
+#   .chezmoi.osRelease.defaultHostname "fedora"
+#   .chezmoi.osRelease.id "fedora"
+# Surprised/annoyed no reference to framework in `chezmoi data`
+# Also didn't I name this laptop `bruno-fw` when I installed Fedora?
+{{- if ne .chezmoi.hostname "fedora" }}
+.config/sway
+.config/waybar
+{{- end }}
+
+# Desktop only
+{{- if ne .chezmoi.hostname "archcraft" }}
+.bashrc
+.gitconfig
+.profile
+.config/awesome
+.config/autostart
+.config/picom
+.vimrc
+.viminfo
+.xbindkeysrc
+.xinitrc
+.xkbmap*
+.xprofile
+.Xauthority
+.zsh*
+{{- end }}
