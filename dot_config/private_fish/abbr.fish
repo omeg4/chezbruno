@@ -14,10 +14,10 @@ abbr -a cdstm 'cd $HOME/.steam/steam/steamapps/common/'
 abbr -a cdrez 'cd $HOME/resume/altacv-mnb'
 
 # `ls` -> `lsd`
-abbr -a ls 'lsd'
-abbr -a ll 'lsd -al'
-abbr -a lst 'lsd -alt'
-abbr -a lss 'lsd -als'
+abbr -a ls 'lsd '
+abbr -a ll 'lsd -al '
+abbr -a lst 'lsd -alt '
+abbr -a lss 'lsd -als '
 
 # Git related shortcuts
 abbr -a lg 'lazygit'
@@ -27,12 +27,12 @@ abbr -a lg 'lazygit'
 abbr -a gs 'git status'
 abbr -a ga 'git add'
 abbr -a gaa 'git add .'
-abbr -a gcm 'git commit -m'
-abbr -a gcam 'git commit -am'
+abbr -a gcm 'git commit -m '
+abbr -a gcam 'git commit -am '
 abbr -a gp 'git push'
 
 # Fisher shorties
-abbr -a fins 'fisher install'
+abbr -a fins 'fisher install '
 
 # App short names
 abbr -a ra 'ranger'
