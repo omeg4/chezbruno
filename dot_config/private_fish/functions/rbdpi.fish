@@ -1,4 +1,4 @@
-function rbd
+function rbdpi
   set -l rbdpi $argv[1]
   argparse --min-args=1 --name=rbdpi -- $argv
   or return
