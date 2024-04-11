@@ -1,12 +1,13 @@
 # Always ignore if present in existing folders
-.git/*
+**/.git/*
 **/__pycache__
 **/*site-?packages*
-.pyenv
-.venv
+*.pyenv
+*.venv
 *.png
 *.jpe?g
 *.gif
+*.ssh-agent
 
 # Fedora/Laptop only
 # could also try -
