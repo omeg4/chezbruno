@@ -96,3 +96,5 @@
 --alias stuffcook '--cookies "/mnt/sgext/stuff/cookies.txt"'
 --alias qutecook '--cookies-from-browser "chrome:/home/bruno/.local/share/qutebrowser/webengine"'
 --alias vivacook '--cookies "/mnt/sgext/info/vivaldi/cookies.txt"'
+
+--alias audio '--vivacook --download-archive "~/Music/dlrx.txt" --audio-quality 0 --audio-format "mp3" --extract-audio --embed-thumbnail -P "~/Music/" -o "%(title)s_%(id)s__ytdl.%(ext)s"'
