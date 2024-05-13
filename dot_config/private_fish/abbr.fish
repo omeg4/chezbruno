@@ -36,6 +36,7 @@ abbr -a fins 'fisher install '
 
 # App short names
 abbr -a ra 'ranger'
+abbr -a zj 'zellij'
 
 # Logitech G502 Controls
 abbr -a rbc 'ratbagctl'

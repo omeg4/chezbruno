@@ -71,6 +71,6 @@ bind-key , command-prompt "rename-window '%%'"
 # 07/05/23: make 'autoread' work in nvim
 set-option -g focus-events on
 unbind-key -n C-a
-set -g prefix ^q
+set -g prefix ^s
 set -g prefix2 F12
-bind q send-prefix
+bind s send-prefix
