@@ -14,6 +14,8 @@ APND=""
 KEEP=false
 CPUPCT=1000
 i=1
+VBR="1.5M"
+VR="540"
 
 for ARG in "$@"; do
 	case $ARG in
@@ -32,6 +34,12 @@ for ARG in "$@"; do
     -l=*)
       CPUPCT=${ARG#*=}
       ;;
+    -vbr=*)
+      VBR=${ARG#*=}
+      ;;
+    -vr=*)
+      VR=${ARG#*=}
+      ;;
 	esac
 done
 
@@ -43,10 +51,11 @@ done
 # esac
 DIR=$(pwd)
 echo "Shrinking $NVIDS videos in $DIR"
-
 echo "DDIR=$DDIR"
 echo "APND=$APND"
 echo "KEEP=$KEEP"
+echo "VBR=$VBR"
+echo "VR=$VR"
 
 # find $DIR -type f -not -iregex ".*shrink.*" -exec ls -S {} | head -n 10
 for vidin in $(ls -S | grep -v "_shrink" | head -$NVIDS); do
@@ -77,7 +86,7 @@ for vidin in $(ls -S | grep -v "_shrink" | head -$NVIDS); do
 
 	if [ ${VINFARR[0]} -gt ${VINFARR[1]} ]; then
 		echo "landscape"
-		cpulimit -l $CPUPCT ffmpeg -loglevel error -i "$vidloc" -vf scale=-2:540 -b:v 1.5M -maxrate 1.5M -bufsize 500k "$vidout" &&
+		cpulimit -l $CPUPCT ffmpeg -loglevel error -i "$vidloc" -vf scale=-2:"$VR" -b:v "$VBR" -maxrate "$VBR" "$vidout" &&
 			NEWSIZE=$(du -hcx "$vidout" | awk ' { print $1 } ' | head -n 1) &&
 			echo "$vidin"	"$OLDSIZE"	"$NEWSIZE" >> /mnt/sgext/crops/vid-shrink-log.txt &&
 			echo "downscale successful, deleting original file $vidloc" >> /mnt/sgext/crops/vid-shrink-log.txt &&
@@ -87,7 +96,7 @@ for vidin in $(ls -S | grep -v "_shrink" | head -$NVIDS); do
 			$KEEP || rm -f "$vidin"
 	else
 		echo "portrait"
-		cpulimit -l $CPUPCT ffmpeg -loglevel error -i "$vidloc" -vf scale=540:-2 -b:v 1.5M -maxrate 1.5M -bufsize 500k "$vidout" &&
+		cpulimit -l $CPUPCT ffmpeg -loglevel error -i "$vidloc" -vf scale="$VR":-2 -b:v "$VBR" -maxrate "$VBR" "$vidout" &&
 			NEWSIZE=$(du -hcx "$vidout" | awk ' { print $1 } ' | head -n 1) &&
 			echo "$vidin"	"$OLDSIZE"	"$NEWSIZE" >> /mnt/sgext/crops/vid-shrink-log.txt &&
 			echo "downscale successful, deleting original file $vidloc" >> /mnt/sgext/crops/vid-shrink-log.txt &&

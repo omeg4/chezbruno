@@ -3,6 +3,6 @@
 --     pattern = { "tex", "cls", "bib", "sty", },
 --   }
 -- )
-local vim = vim
+-- local vim = vim
 
-vim.g.maplocalleader = "<Bslash>"
+-- vim.g.maplocalleader = "<Bslash>"

@@ -11,6 +11,7 @@ return {
   },
   -- https://stackoverflow.com/questions/71726911/set-vim-plugin-options-in-a-neovim-init-lua
   config = function()
+    vim.g['vimtex_version_check'] = 0
     vim.g['vimtex_view_method'] = 'zathura'
     vim.g['vimtex_quickfix_mode'] = 0
     vim.g['vimtex_mappings_enabled'] = 1
