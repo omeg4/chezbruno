@@ -7,9 +7,20 @@ return {
 	end,
 	opts = {
     plugins = {
+      marks = true,
+      registers = true,
       spelling = {
         enabled = false,
       },
+    },
+    presets = {
+      operators = true,
+      motions = true,
+      text_objects = true,
+      windows = true,
+      nav = true,
+      z = true,
+      g = true,
     },
     window = {
       border = "double",

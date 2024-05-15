@@ -1,8 +1,8 @@
 local vim = vim
 
-vim.g.mapleader = " "
+-- vim.g.mapleader = " "
 -- Just set this here instead of in nvim/after/ftplugin/tex.lua
-vim.g.maplocalleader = "\\"
+-- vim.g.maplocalleader = "\\"
 
 local function map(mode, lhs, rhs, opts)
 	local options = { noremap = true, silent = true }
