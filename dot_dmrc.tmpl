@@ -1,0 +1,8 @@
+[Desktop]
+{{- if eq .chezmoi.hostname "fw-brunocraft" }}
+Session=hyprland
+{{- else if eq .chezmoi.hostname "brunocraft" }}
+Session=awesome
+{{- else }}
+Session=openbox
+{{- end }}
