@@ -152,48 +152,43 @@ return {
 
     -- TODO: add 'brain dump' mapping to create a new obsidian note (in a float window, maybe) to capture quick thoughts
     -- TODO: configure daily notes as a table of contents for all notes created that day
-    wk.register({
-      ["<leader>o"] = { name = '+Obsidian.nvim',
-        w = { "<cmd>ObsidianWorkspace ", "Open Obsidian [W]orkspace picker" },
-        o = { "<cmd>ObsidianToday<CR>", "Open Obsidian Today" },
-        i = {
-          function()
-            -- Get info about current buffer before doing Obsidian actions
-            local buf_path = vim.api.nvim_buf_get_name(0)
+    wk.add({
+      { "<leader>o", group = "Obsidian.nvim" },
+      { "<leader>oa", "<cmd>ObsidianOpen<CR>", desc = "Open current note in the Obsidian [a]pp" },
+      { "<leader>oc", group = "Modify `vim.opt.conceallevel`" },
+      { "<leader>ocj", "<cmd>lua vim.opt.conceallevel = 0<CR>", desc = "Set `vim.opt.conceallevel = 0`" },
+      { "<leader>ock", "<cmd>lua vim.opt.conceallevel = 1<CR>", desc = "Set `vim.opt.conceallevel = 1`" },
+      { "<leader>ocl", "<cmd>lua vim.opt.conceallevel = 2<CR>", desc = "Set `vim.opt.conceallevel = 2` [Default]" },
+      { "<leader>of", "<cmd>ObsidianFollowLink<CR>", desc = "Follow Obsidian Link" },
+      { "<leader>og", "<cmd>ObsidianFollowLink vsplit<CR>", desc = "Follow Obsidian Link (vsplit)" },
+      { "<leader>oi", function()
+          -- Get info about current buffer before doing Obsidian actions
+          local buf_path = vim.api.nvim_buf_get_name(0)
 
-            -- Prompt user for note name
-            local filename_prompt = vim.fn.input("Enter note name: ")
+          -- Prompt user for note name
+          local filename_prompt = vim.fn.input("Enter note name: ")
 
-            -- Open Obsidian Workspace picker
-            vim.cmd( { cmd = "ObsidianWorkspace" } )
+          -- Open Obsidian Workspace picker
+          vim.cmd( { cmd = "ObsidianWorkspace" } )
 
-            -- Create new note with name
-            vim.cmd( { cmd = "ObsidianNew", args = { filename_prompt } } )
+          -- Create new note with name
+          vim.cmd( { cmd = "ObsidianNew", args = { filename_prompt } } )
 
-            -- Insert `quickie.md` template
-            vim.cmd( { cmd = "ObsidianTemplate", args = { "quickie.md" } } )
-          end,
-          "Custom quick note from template"
-        },
-        n = { "<cmd>ObsidianNew<CR>", "Open Obsidian New" },
-        q = { "<cmd>ObsidianQuickSwitch<CR>", "Open Obsidian Quick Switch" },
-        f = { "<cmd>ObsidianFollowLink<CR>", "Follow Obsidian Link" },
-        g = { "<cmd>ObsidianFollowLink vsplit<CR>", "Follow Obsidian Link (vsplit)" },
-        v = { "<cmd>ObsidianFollowLink hsplit<CR>", "Follow Obsidian Link (hsplit)" },
-        l = { name = "+Make [l]ink",
-          l = { "<cmd>ObsidianLink<CR>", "[L]ink inline selection to existing note" },
-          n = { "<cmd>ObsidianLinkNew<CR>", "[N]ew note linked to inline selection" },
-          b = { "<cmd>ObsidianBacklinks<CR>", "List [B]acklinks to current note/buffer" },
-        },
-        p = { "<cmd>ObsidianPasteImg<CR>", "[P]aste image from clipboard to current note" },
-        a = { "<cmd>ObsidianOpen<CR>", "Open current note in the Obsidian [a]pp" },
-        c = { name = "+Modify `vim.opt.conceallevel`",
-          j = { "<cmd>lua vim.opt.conceallevel = 0<CR>", "Set `vim.opt.conceallevel = 0`" },
-          k = { "<cmd>lua vim.opt.conceallevel = 1<CR>", "Set `vim.opt.conceallevel = 1`" },
-          l = { "<cmd>lua vim.opt.conceallevel = 2<CR>", "Set `vim.opt.conceallevel = 2` [Default]" },
-        },
-        t = { "<cmd>ObsidianTemplate<CR>", "Insert Obsidian [T]emplate" },
-      }
+          -- Insert `quickie.md` template
+          vim.cmd( { cmd = "ObsidianTemplate", args = { "quickie.md" } } )
+        end, desc = "Custom quick note from template"
+      },
+      { "<leader>ol", group = "Make [l]ink" },
+      { "<leader>olb", "<cmd>ObsidianBacklinks<CR>", desc = "List [B]acklinks to current note/buffer" },
+      { "<leader>oll", "<cmd>ObsidianLink<CR>", desc = "[L]ink inline selection to existing note" },
+      { "<leader>oln", "<cmd>ObsidianLinkNew<CR>", desc = "[N]ew note linked to inline selection" },
+      { "<leader>on", "<cmd>ObsidianNew<CR>", desc = "Open Obsidian New" },
+      { "<leader>oo", "<cmd>ObsidianToday<CR>", desc = "Open Obsidian Today" },
+      { "<leader>op", "<cmd>ObsidianPasteImg<CR>", desc = "[P]aste image from clipboard to current note" },
+      { "<leader>oq", "<cmd>ObsidianQuickSwitch<CR>", desc = "Open Obsidian Quick Switch" },
+      { "<leader>ot", "<cmd>ObsidianTemplate<CR>", desc = "Insert Obsidian [T]emplate" },
+      { "<leader>ov", "<cmd>ObsidianFollowLink hsplit<CR>", desc = "Follow Obsidian Link (hsplit)" },
+      { "<leader>ow", "<cmd>ObsidianWorkspace ", desc = "Open Obsidian [W]orkspace picker" },
     })
 
   end

@@ -22,46 +22,39 @@ map("i", "jj", "<ESC>", { desc = "Exit insert mode with jj" })
 -- TODO: figure out how to use <expr> in mappings lol
 local wk = require("which-key")
 
-wk.register({ -- icon-picker.nvim Normal Mode
-  ["<leader>i"] = {
-    name = "+IconPicker",
-    i = { "<cmd>IconPickerNormal<CR>", "[I]nsert icon with :IconPickerNormal" },
-    y = { "<cmd>IconPickerYank<CR>", "[Y]ank icon with :IconPickerYank" },
-    ["<C-i>"] = { "Insert Mode: :IconPickerInsert" },
-  }
+wk.add({ -- icon-picker.nvim Normal Mode
+  { "<leader>i", group = "IconPicker" },
+  { "<leader>i<C-i>", desc = "Insert Mode: :IconPickerInsert" },
+  { "<leader>ii", "<cmd>IconPickerNormal<CR>", desc = "[I]nsert icon with :IconPickerNormal" },
+  { "<leader>iy", "<cmd>IconPickerYank<CR>", desc = "[Y]ank icon with :IconPickerYank" },
 })
 
-wk.register({ -- icon-picker.nvim Insert Mode
-  ["<C-i>"] = {
-    name = "+IconPickerInsert",
-    i = { "<cmd>IconPickerInsert<CR>", ":IconPickerInsert" },
-    s = { "<cmd>IconPickerInsert alt_font symbols<CR>", "Insert alt_font symbols" },
-    n = { "<cmd>IconPickerInsert nerd_font emoji<CR>", "Insert nerd_font emoji" },
-    e = { "<cmd>IconPickerInsert emoji nerd_font alt_font symbols<CR>", "Insert emoji nerd_font alt_font symbols" },
-  }, { mode = "i" }
+wk.add({ -- icon-picker.nvim Insert Mode
+  { mode = "i" },
+  { "<C-i>", group = "+IconPickerInsert" },
+  { "<C-i>e", "<cmd>IconPickerInsert emoji nerd_font alt_font symbols<CR>", desc = "Insert emoji nerd_font alt_font symbols" },
+  { "<C-i>i", "<cmd>IconPickerInsert<CR>", desc = ":IconPickerInsert" },
+  { "<C-i>n", "<cmd>IconPickerInsert nerd_font emoji<CR>", desc = "Insert nerd_font emoji" },
+  { "<C-i>s", "<cmd>IconPickerInsert alt_font symbols<CR>", desc = "Insert alt_font symbols" },
 })
 
-wk.register({ -- <leader>p - Plugin Management
-  ["<leader>p"] = {
-    name = "+Plugin Management",
-    l = { "<cmd>Lazy<CR>", "Open Lazy UI" },
-    m = { "<cmd>Mason<CR>", "Open Mason UI" },
-    -- r = { "<cmd>luafile " .. vim.fn.expand("~") .. "/.config/nvim/init.lua<CR>", "Source init.lua" },
-    n = {
+wk.add({ -- <leader>p - Plugin Management
+  { "<leader>p", group = "+Plugin Management" },
+  { "<leader>pl", "<cmd>Lazy<CR>", desc = "Open Lazy UI" },
+  { "<leader>pm", "<cmd>Mason<CR>", desc = "Open Mason UI" },
+  -- { "<leader>pr", "<cmd>luafile " .. vim.fn.expand("~") .. "/.config/nvim/init.lua<CR>", "Source init.lua" },
+  { "<leader>pn",
       function()
         local filename_input = vim.fn.input("Enter plugin <name>.lua: ") .. ".lua"
         local plugin_path = vim.fn.expand("~") .. "/.config/nvim/lua/bruno/plugins/" .. filename_input
         vim.cmd( { cmd = 'edit', args = { plugin_path } } )
       end,
-      "Add new <name>.lua file to plugins/ folder" },
-  },
+      desc = "Add new <name>.lua file to plugins/ folder" },
 })
 
-wk.register({ -- <leader>g - LazyGit
-  ["<leader>g"] = {
-    name = "+LazyGit",
-    g = { "<cmd>LazyGit<CR>", "Open :Lazy[g]it" },
-  }
+wk.add({ -- <leader>g - LazyGit
+  { "<leader>g", group = "+LazyGit" },
+  { "<leader>gg", "<cmd>LazyGit<CR>", desc = "Open :Lazy[g]it" },
 })
 
 local hop = require("hop")
@@ -93,43 +86,39 @@ local function hft( dir, pos, hop_target )
 end
 
 -- TODO: SURELY there's a more compact and repeatable way to set these keybinds up...
-wk.register({ -- , - Hop: easymotion-like movement
-  [","] = {
-    name = "+Hop motions",
-    f = { "<cmd>HopChar1<CR>", "[F]ind by 1 char", },
-    F = { "<cmd>HopChar2<CR>", "[F]ind by 2 chars", },
-    t = { function()
-      hop.hint_char1({
-        direction = directions.AFTER_CURSOR,
-        hint_offset = 1,
-        current_line_only = false,
-      })
-    end, "Hop forwards [t]o 1 char target" },
-    T = { function()
-      hop.hint_char1({
-        direction = directions.BEFORE_CURSOR,
-        hint_offset = -1,
-        current_line_only = false,
-      })
-    end, "Hop backwards [t]o 1 char target" },
-    w = { "<cmd>HopWord<CR>", "Hop to another [w]ord ( ) " },
-    [","] = { "<cmd>HopNodes<CR>", "Hop between Treesitter nodes (<->) " },
+wk.add({ -- , - Hop: easymotion-like movement
+  { ",", group = "+Hop motions" },
+  { ",f", "<cmd>HopChar1<CR>", desc = "[F]ind by 1 char", },
+  { ",F", "<cmd>HopChar2<CR>", desc = "[F]ind by 2 chars", },
+  { ",w", "<cmd>HopWord<CR>", desc = "Hop to another [w]ord ( ) " },
+  { ",,", "<cmd>HopNodes<CR>", desc = "Hop between Treesitter nodes (<->) " },
+  { ",t", function()
+    hop.hint_char1({
+      direction = directions.AFTER_CURSOR,
+      hint_offset = 1,
+      current_line_only = false,
+    })
+  end, desc = "Hop forwards [t]o 1 char target" },
+  { ",T", function()
+    hop.hint_char1({
+      direction = directions.BEFORE_CURSOR,
+      hint_offset = -1,
+      current_line_only = false,
+    })
+  end, desc = "Hop backwards [t]o 1 char target" },
     -- How to add functions for cut/delete actions like `c`?
-  }
 })
 
-wk.register({ -- <leader>u - Get info about glyphs, symbols, and digraphs using unicode.vim
-  ["<leader>u"] = {
-    name = '+Unicode.vim',
-    n = { "<cmd>UnicodeName<CR>", "Unicode Name" },
-    t = { "<cmd>UnicodeTable<CR>", "Unicode Table" },
-    d = { "<cmd>Digraphs<CR>", "Search for Digraphs" },
-    s = { "<cmd>UnicodeSearch<CR>", "Unicode [s]earch" },
-    S = { "<cmd>UnicodeSearch!<CR>", "Unicode [s]earch and add[!] at current cursor position" },
-    g = "INSERT MODE: <C-x><C-g> - Complete digraph char (e.g. *X<C-x><C-g>)",
-    z = "INSERT MODE: <C-x><C-z> - Complete Unicode char (e.g. U+00d7<C-x><C-z>)",
-    b = { "<F4>", "Unicode [b]rowse" },
-  }
+wk.add({ -- <leader>u - Get info about glyphs, symbols, and digraphs using unicode.vim
+  { "<leader>u", group = "Unicode.vim" },
+  { "<leader>uS", "<cmd>UnicodeSearch!<CR>", desc = "Unicode [s]earch and add[!] at current cursor position" },
+  { "<leader>ub", "<F4>", desc = "Unicode [b]rowse" },
+  { "<leader>ud", "<cmd>Digraphs<CR>", desc = "Search for Digraphs" },
+  { "<leader>ug", desc = "INSERT MODE: <C-x><C-g> - Complete digraph char (e.g. *X<C-x><C-g>)" },
+  { "<leader>un", "<cmd>UnicodeName<CR>", desc = "Unicode Name" },
+  { "<leader>us", "<cmd>UnicodeSearch<CR>", desc = "Unicode [s]earch" },
+  { "<leader>ut", "<cmd>UnicodeTable<CR>", desc = "Unicode Table" },
+  { "<leader>uz", desc = "INSERT MODE: <C-x><C-z> - Complete Unicode char (e.g. U+00d7<C-x><C-z>)" },
 })
 
 -- wk.register({
@@ -169,27 +158,24 @@ map({ "n", "i", "v" }, "<C-S-Right>", "<cmd>resize vertical +5<CR>", { desc = "I
 map({ "n", "i", "v" }, "<C-S-Left>" , "<cmd>resize vertical -5<CR>", { desc = "Decrease window width by 5" , remap = false })
 
 -- barbar.lua {{{
-wk.register({
-  ["<leader>b"] = {
-    name = '+barbar.lua',
-    c = { "<cmd>BufferPick<CR>", "[C]hoose buffer by index" },
-    k = { "<cmd>BufferClose<CR>", "[K]ill buffer" },
-    p = { "<cmd>BufferPrevious<CR>", "Go to previous buffer" },
-    n = { "<cmd>BufferNext<CR>", "Go to Next buffer" },
-    ["<"] = { "<cmd>BufferMovePrevious<CR>", "Move buffer (<-)" },
-    [">"] = { "<cmd>BufferMoveNext<CR>", "Move buffer (->)" },
-
-    ["1"] = { "<cmd>BufferGoto 1<CR>", "Goto Buffer [1]" },
-    ["2"] = { "<cmd>BufferGoto 2<CR>", "Goto Buffer [2]" },
-    ["3"] = { "<cmd>BufferGoto 3<CR>", "Goto Buffer [3]" },
-    ["4"] = { "<cmd>BufferGoto 4<CR>", "Goto Buffer [4]" },
-    ["5"] = { "<cmd>BufferGoto 5<CR>", "Goto Buffer [5]" },
-    ["6"] = { "<cmd>BufferGoto 6<CR>", "Goto Buffer [6]" },
-    ["7"] = { "<cmd>BufferGoto 7<CR>", "Goto Buffer [7]" },
-    ["8"] = { "<cmd>BufferGoto 8<CR>", "Goto Buffer [8]" },
-    ["9"] = { "<cmd>BufferGoto 9<CR>", "Goto Buffer [9]" },
-    ["0"] = { "<cmd>BufferLast<CR>", "Goto Last Buffer" },
-  }
+wk.add({
+  { "<leader>b", group = "barbar.lua" },
+  { "<leader>b0", "<cmd>BufferLast<CR>", desc = "Goto Last Buffer" },
+  { "<leader>b1", "<cmd>BufferGoto 1<CR>", desc = "Goto Buffer [1]" },
+  { "<leader>b2", "<cmd>BufferGoto 2<CR>", desc = "Goto Buffer [2]" },
+  { "<leader>b3", "<cmd>BufferGoto 3<CR>", desc = "Goto Buffer [3]" },
+  { "<leader>b4", "<cmd>BufferGoto 4<CR>", desc = "Goto Buffer [4]" },
+  { "<leader>b5", "<cmd>BufferGoto 5<CR>", desc = "Goto Buffer [5]" },
+  { "<leader>b6", "<cmd>BufferGoto 6<CR>", desc = "Goto Buffer [6]" },
+  { "<leader>b7", "<cmd>BufferGoto 7<CR>", desc = "Goto Buffer [7]" },
+  { "<leader>b8", "<cmd>BufferGoto 8<CR>", desc = "Goto Buffer [8]" },
+  { "<leader>b9", "<cmd>BufferGoto 9<CR>", desc = "Goto Buffer [9]" },
+  { "<leader>b<", "<cmd>BufferMovePrevious<CR>", desc = "Move buffer (<-)" },
+  { "<leader>b>", "<cmd>BufferMoveNext<CR>", desc = "Move buffer (->)" },
+  { "<leader>bc", "<cmd>BufferPick<CR>", desc = "[C]hoose buffer by index" },
+  { "<leader>bk", "<cmd>BufferClose<CR>", desc = "[K]ill buffer" },
+  { "<leader>bn", "<cmd>BufferNext<CR>", desc = "Go to Next buffer" },
+  { "<leader>bp", "<cmd>BufferPrevious<CR>", desc = "Go to previous buffer" },
 })
 map("n", "[b", "<cmd>BufferPrevious<CR>", { desc = "Go to previous [b]uffer" })
 map("n", "]b", "<cmd>BufferNext<CR>", { desc = "Go to next [b]uffer" })
@@ -201,11 +187,9 @@ map({ "n", "v" }, "<leader>md", "<cmd>FormatDisable<CR>", { desc = "Disable auto
 map({ "n", "v" }, "<leader>me", "<cmd>FormatEnable<CR>", { desc = "Enable autoformat-on-save" })
 
 -- toggleterm.nvim
-wk.register({
-  ["<leader>t"] = {
-    name = "+toggleterm",
-    t = { "<cmd>ToggleTerm<CR>", "Toggle [t]erminal" },
-  }
+wk.add({
+  { "<leader>t", group = "toggleterm" },
+  { "<leader>tt", "<cmd>ToggleTerm<CR>", desc = "Toggle [t]erminal" },
 })
 
 function _G.set_terminal_keymaps()

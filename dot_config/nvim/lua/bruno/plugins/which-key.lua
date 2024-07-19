@@ -22,7 +22,7 @@ return {
       z = true,
       g = true,
     },
-    window = {
+    win = {
       border = "double",
     }
   },
