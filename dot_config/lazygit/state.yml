@@ -1,11 +1,8 @@
 lastupdatecheck: 0
 recentrepos:
-    - /home/bruno/poedev/DashOfExile
-    - /home/bruno/.config/nvim
-    - /home/bruno/poedev/PathOfBuilding
-    - /home/bruno/resume
+- /home/bruno/resume
 startuppopupversion: 5
-lastversion: 0.42.0
+lastversion: 0.41.0
 customcommandshistory: []
 hidecommandlog: false
 ignorewhitespaceindiffview: false
