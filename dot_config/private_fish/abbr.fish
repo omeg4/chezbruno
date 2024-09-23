@@ -41,8 +41,7 @@ abbr -a zj 'zellij'
 # Logitech G502 Controls
 abbr -a rbc 'ratbagctl'
 abbr -a rbl 'ratbagctl list'
-abbr -a rbg 'ratbagctl booming-agouti '
-# abbr -a rbps 'ratbagctl booming-agouti profile active set '
+abbr -a rbd 'ratbagctl (rbdn) '
 
 # Edit file shortcuts
 abbr -a efs 'nvim $HOME/.config/fish/'

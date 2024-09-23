@@ -1,5 +1,6 @@
 return {
 	"stevearc/conform.nvim",
+  branch = "nvim-0.9",
 	lazy = true,
 	event = { "BufReadPre", "BufNewFile" }, -- to disable, comment this out
 	config = function()

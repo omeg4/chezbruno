@@ -29,13 +29,13 @@ return {
       end,
       workspaces = {
         {
+          name = "personal",
+          path = vim.fn.expand("~") .. "/Documents/bruno/",
+        },
+        {
           name = "test",
           path = vim.fn.expand("~") .. "/Documents/brunobsidian/",
         },
-        -- {
-        --   name = "personal",
-        --   path = vim.fn.expand("~") .. "/Documents/bruno/",
-        -- },
       },
       completion = {
         nvim_cmp = true,
@@ -188,7 +188,7 @@ return {
       { "<leader>oq", "<cmd>ObsidianQuickSwitch<CR>", desc = "Open Obsidian Quick Switch" },
       { "<leader>ot", "<cmd>ObsidianTemplate<CR>", desc = "Insert Obsidian [T]emplate" },
       { "<leader>ov", "<cmd>ObsidianFollowLink hsplit<CR>", desc = "Follow Obsidian Link (hsplit)" },
-      { "<leader>ow", "<cmd>ObsidianWorkspace ", desc = "Open Obsidian [W]orkspace picker" },
+      { "<leader>ow", "<cmd>ObsidianWorkspace<CR>", desc = "Open Obsidian [W]orkspace picker" },
     })
 
   end

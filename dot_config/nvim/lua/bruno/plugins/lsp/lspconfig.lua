@@ -130,7 +130,7 @@ return {
       filetypes = { "json" },
     })
 
-    lspconfig["tsserver"].setup({
+    lspconfig["ts_ls"].setup({ -- Replace "tsserver" -> "ts_ls" 09/13/24
       capabilities = capabilities,
       filetypes = { "typescript", "typescriptreact", "typescript.tsx", },
     })

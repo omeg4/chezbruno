@@ -58,6 +58,14 @@ parser.add_argument('-v', '--verbose', action='store_true', help='verbose output
 parser.add_argument('urls', metavar='url', nargs=argparse.REMAINDER, help='URL(s) to download')
 args = parser.parse_args()
 
+def parse_sb_url( sb_url ):
+    #-@diagnostic disable: string
+    '''
+    Parse the input URL and determine if it's a video (canonical), playlist, or playlist video.
+        Canonical: "https://spankbang.com/video/\w+"
+        Playlist:   "https://spankbang.com/(\w{5})/playlist/(.*)"
+    '''
+
 def get_pl_vid_urls_from_pl( pl_url ):
     list_pl_vids_on_page = []
     req = Request( pl_url, headers={ 'User-Agent': 'Mozilla/5.0' } )
@@ -86,8 +94,7 @@ def download_vid_from_canonical_url( pl_canonical_url ):
     except:
         return { "Outcome" : "Failed", "Canonical URL" : pl_canonical_url }
 
-def main():
-    print("Input URL Arg: " + args.urls) if args.verbose else None
+def proc_sb_pl_url( sb_pl_url ):
     pl_vid_list = get_pl_vid_urls_from_pl( args.urls[0] )
     for pl_vid in pl_vid_list:
         vid_canonical_url = get_canonical_url_from_pl_vid( pl_vid ) 
@@ -98,6 +105,10 @@ def main():
                 print( "Updated dlrx.txt with PL and Canonical URL:\n\t{}\n\t{}".format( canonical_result["Canonical URL"], pl_vid ) )
         else:
             print( "Canonical Download Failed: \n\tPL: {}\n\tCN: {}".format( pl_vid, vid_canonical_url ) )
+
+def main():
+    print("Input URL Arg: " + args.urls) if args.verbose else None
+    proc_sb_pl_url( args.urls[0] )
 
 if __name__ == "__main__":
     main()
