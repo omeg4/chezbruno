@@ -29,12 +29,12 @@ return {
       end,
       workspaces = {
         {
-          name = "personal",
-          path = vim.fn.expand("~") .. "/Documents/bruno/",
+          name = "main",
+          path = vim.fn.expand("~") .. "/Documents/bruno",
         },
         {
-          name = "test",
-          path = vim.fn.expand("~") .. "/Documents/brunobsidian/",
+          name = "dev",
+          path = vim.fn.expand("~") .. "/Documents/brunobsidian",
         },
       },
       completion = {
@@ -59,10 +59,10 @@ return {
         },
       },
       new_notes_location = "current_dir",
-      notes_subdir = "notes",
+      -- notes_subdir = "notes",
       log_level = vim.log.levels.INFO,
       daily_notes = {
-        folder = "notes/dailies",
+        folder = "/dailies",
         date_format = "%Y-%m-%d",
         alias_format = "%B %-d, %Y",
       },
@@ -91,7 +91,7 @@ return {
       sort_by = "modified", -- "[modified|path|accessed|created]"
       sort_reversed = true,
 
-      open_notes_in = "current", -- "[current|vsplit|hsplit]"
+      open_notes_in = "hsplit", -- "[current|vsplit|hsplit]"
 
       ui = {
         enable = true,
@@ -99,7 +99,7 @@ return {
       },
 
       attachments = {
-        img_folder = "assets",
+        img_folder = "attach",
         img_text_func = function(client, path)
           local link_path
           local vault_relative_path = client:vault_relative_path(path)
@@ -161,7 +161,7 @@ return {
       { "<leader>ocl", "<cmd>lua vim.opt.conceallevel = 2<CR>", desc = "Set `vim.opt.conceallevel = 2` [Default]" },
       { "<leader>of", "<cmd>ObsidianFollowLink<CR>", desc = "Follow Obsidian Link" },
       { "<leader>og", "<cmd>ObsidianFollowLink vsplit<CR>", desc = "Follow Obsidian Link (vsplit)" },
-      { "<leader>oi", function()
+      { "<leader>oi", function() -- Custom Quick Note from Template
           -- Get info about current buffer before doing Obsidian actions
           local buf_path = vim.api.nvim_buf_get_name(0)
 
