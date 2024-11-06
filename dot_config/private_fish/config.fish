@@ -13,13 +13,15 @@ if status is-interactive
   source "$HOME/.config/fish/abbr.fish"
   source "$HOME/.config/fish/.secrets.fish"
 
+  # Moved inside `if status is-interactive` block, after seeing errors in TTY shell. {{{
+  # https://devhints.io/fish-shell
+
+  # Replaced starship with tide, i.e. `fisher install IlanCosman/tide@v6`
+  # starship init fish | source
+
+  zoxide init fish | source
+
+  source "$HOME/.asdf/asdf.fish"
+  # }}}
+
 end
-
-# https://devhints.io/fish-shell
-
-# Replaced starship with tide, i.e. `fisher install IlanCosman/tide@v6`
-# starship init fish | source
-
-zoxide init fish | source
-
-source "$HOME/.asdf/asdf.fish"
