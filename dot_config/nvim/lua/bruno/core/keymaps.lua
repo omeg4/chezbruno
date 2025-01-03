@@ -192,6 +192,12 @@ wk.add({
   { "<leader>tt", "<cmd>ToggleTerm<CR>", desc = "Toggle [t]erminal" },
 })
 
+-- noice.nvim
+wk.add({
+  { "<leader>nn", "<cmd>NoiceHistory<CR>", desc = "Open :[N]oiceHistory" },
+  { "<leader>nf", "<cmd>NoiceTelescope<CR>", desc = "Open :NoiceTelescope [f]inder" },
+})
+
 function _G.set_terminal_keymaps()
   local opts = { buffer = 0 }
   map( 't', '<esc>', [[ <C-t> ]], opts )

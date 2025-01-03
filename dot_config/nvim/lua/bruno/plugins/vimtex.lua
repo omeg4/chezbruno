@@ -26,6 +26,18 @@ return {
     })
     vim.g['vimtex_enabled'] = 1
     vim.g['vimtex_compiler_enabled'] = 1
+    -- vim.g['vimtex_compiler_method'] = 'xelatex'
+    -- vim.g['vimtex_compiler_xelatex'] = ({
+    --   executable = '/usr/bin/xelatex',
+    --   continuous = 1,
+    --   callback = 1,
+    --   options = {
+    --   '-file-line-error',
+    --   '-interaction=nonstopmode',
+    --   '-synctex=1',
+    --   '-shell-escape',
+    --   }
+    -- })
     vim.g['vimtex_compiler_method'] = 'latexmk'
     vim.g['vimtex_compiler_latexmk'] = ({
       executable = '/usr/bin/latexmk',

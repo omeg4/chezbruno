@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #
 
-import os, sys, argparse
+import os, sys, argparse, re
 import yt_dlp
 import yt_dlp.options
 from urllib.request import Request, urlopen
@@ -62,7 +62,7 @@ def parse_sb_url( sb_url ):
     #-@diagnostic disable: string
     '''
     Parse the input URL and determine if it's a video (canonical), playlist, or playlist video.
-        Canonical: "https://spankbang.com/video/\w+"
+        Canonical:  "https://spankbang.com/video/\w+"
         Playlist:   "https://spankbang.com/(\w{5})/playlist/(.*)"
     '''
 
