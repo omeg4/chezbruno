@@ -1,13 +1,13 @@
 lastupdatecheck: 0
 recentrepos:
+    - /home/bruno/.config/nvim
     - /home/bruno/poedev/DashOfExile
     - /home/bruno/resume
-    - /home/bruno/.config/nvim
     - /home/bruno/projects/omeg4.github.io
     - /home/bruno/projects/streamlit
     - /home/bruno/poedev/PathOfBuilding
 startuppopupversion: 5
-lastversion: 0.44.1
+lastversion: 0.46.0
 customcommandshistory: []
 hidecommandlog: false
 ignorewhitespaceindiffview: false
