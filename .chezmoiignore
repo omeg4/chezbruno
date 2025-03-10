@@ -13,6 +13,7 @@
 {{- if ne .chezmoi.fqdnHostname "fw-brunocraft" }}
 .config/sway
 .config/waybar
+Framework16-AMD.conf
 {{- end }}
 
 # Desktop only
