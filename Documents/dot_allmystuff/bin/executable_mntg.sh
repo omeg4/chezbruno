@@ -34,15 +34,11 @@ for ARG in "$@"; do
 		-s=*)
 			SCRN=${ARG#*=}
 			case $SCRN in
-        1)
-          WIDTH=3840
-          HEIGHT=1600
-          ;;
-				2)
+				1)
 					WIDTH=2560
 					HEIGHT=1440
 					;;
-				3)
+				2)
 					WIDTH=1920
 					HEIGHT=1080
 					;;
@@ -79,13 +75,12 @@ done
 
 FILTARG=${FILTER//,/.*"'" -o -iregex "'".*}
 FILTARG=${FILTARG//+/.*"'" -iregex "'".*}
-FILTARG='-iregex ".*$FILTARG.*"'
+FILTARG="-iregex '.*$FILTARG.*'"
 
 PICY=$(($HEIGHT / $NYPIC - 5))
 PICX=$(($WIDTH / $NXPIC))
 
-FINDCMD_OLD="find $PDIR -type f \( $FILTARG \) $ARARG -exec feh -F -z -m -W $WIDTH -H $HEIGHT -y $PICX -E $PICY -j ../montages/ --stretch {} +"
-FINDCMD="feh -F -z -m -W $WIDTH -H $HEIGHT -y $PICX -E $PICY -j ../montages/ --stretch $(find $PDIR -type f \( $FILTARG \) $ARARG)"
+FINDCMD="find $PDIR -type f \( $FILTARG \) $ARARG -exec feh -F -z -m -W $WIDTH -H $HEIGHT -y $PICX -E $PICY -j ../montages/ --stretch {} +"
 
 cd $PDIR
 
