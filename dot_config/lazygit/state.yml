@@ -1,5 +1,6 @@
 lastupdatecheck: 0
 recentrepos:
+    - /home/bruno/.local/share/chezmoi
     - /home/bruno/.config/nvim
     - /home/bruno/poedev/DashOfExile
     - /home/bruno/resume

@@ -11,8 +11,8 @@
 
 # Framework laptop only
 {{- if ne .chezmoi.fqdnHostname "fw-brunocraft" }}
-# .config/sway
-# .config/waybar
+.config/sway
+.config/waybar
 {{- end }}
 
 # Desktop only
