@@ -1,4 +1,4 @@
----@diagnostic disable: unused-local
+---@diagnostic disable: unused-local, undefined-global, lowercase-global
 -- {{{ Required libraries
 local awesome, client, mouse, screen, tag = awesome, client, mouse, screen, tag
 local ipairs, string, os, table, tostring, tonumber, type = ipairs, string, os, table, tostring, tonumber, type
@@ -10,14 +10,15 @@ local wibox         = require("wibox")
 local beautiful     = require("beautiful")
 local naughty       = require("naughty")
 local lain          = require("lain")
-local revelation	= require("revelation")
+local revelation	  = require("revelation")
 local menubar       = require("menubar")
 local freedesktop   = require("freedesktop")
+-- local audio_widget  = require("awesome-pulseaudio-widget")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
                       require("awful.hotkeys_popup.keys")
 -- local conky			= require("conky")
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
-local markup 		= lain.util.markup
+local markup 		    = lain.util.markup
 
 -- }}}
 

@@ -175,9 +175,9 @@ function _M.get()
 
 		-- Standard program{{{
 		awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
-				  {description = "open a terminal", group = "launcher"}),
+				  {description = "Open terminal " .. terminal, group = "launcher"}),
 		awful.key({ modkey, "Shift"	  }, "Return", function () awful.spawn(term_alt) end,
-				  {description = "open a terminal", group = "launcher"}),
+				  {description = "Open alternate terminal " .. term_alt, group = "launcher"}),
 		awful.key({ modkey, "Control" }, "r", awesome.restart,
 				  {description = "reload awesome", group = "awesome"}),
 	--    awful.key({ modkey, "Shift"   }, "q", awesome.quit,
@@ -230,41 +230,59 @@ function _M.get()
 		awful.key({ }, "XF86MonBrightnessDown", function () os.execute("xbacklight -dec 10") end,
 				  {description = "-10%", group = "hotkeys"}),--}}}
 
+    -- Pulseaudio volume control{{{
+    awful.key({ }, "XF86AudioRaiseVolume", function () os.execute("pactl set-sink-volume @DEFAULT_SINK@ +2%") end,
+            {description = "volume up", group = "hotkeys"}),
+
+    awful.key({ }, "XF86AudioLowerVolume", function () os.execute("pactl set-sink-volume @DEFAULT_SINK@ -2%") end,
+          {description = "volume down", group = "hotkeys"}),
+
+    awful.key({ altkey }, "XF86AudioRaiseVolume", function () os.execute("pactl set-sink-volume @DEFAULT_SINK@ +10%") end,
+            {description = "volume up", group = "hotkeys"}),
+
+    awful.key({ altkey }, "XF86AudioLowerVolume", function () os.execute("pactl set-sink-volume @DEFAULT_SINK@ -10%") end,
+          {description = "volume down", group = "hotkeys"}),
+
+    awful.key({  }, "XF86AudioMute", function () os.execute("pactl set-sink-mute @DEFAULT_SINK@ toggle") end,
+        {description = "toggle mute", group = "hotkeys"}),--}}}
+    -- }}}
+
 		-- ALSA volume control ***MY KEYBINDINGS*** {{{
-		awful.key({ }, "XF86AudioRaiseVolume",
-			function ()
-				os.execute(string.format("amixer -q set %s 2%%+", W.volume.channel))
-				W.volume.update()
-			end,
-			{description = "my volume up", group = "hotkeys"}),
 
-		awful.key({ }, "XF86AudioLowerVolume",
-			function ()
-				os.execute(string.format("amixer -q set %s 2%%-", W.volume.channel))
-				W.volume.update()
-			end,
-			{description = "my volume down", group = "hotkeys"}),
+		-- awful.key({ }, "XF86AudioRaiseVolume",
+		-- 	function ()
+		-- 		os.execute(string.format("amixer -q set %s 2%%+", W.volume.channel))
+		-- 		W.volume.update()
+		-- 	end,
+		-- 	{description = "my volume up", group = "hotkeys"}),
 
-		awful.key({ altkey }, "XF86AudioLowerVolume",
-			function ()
-				os.execute(string.format("amixer -q set %s toggle", W.volume.togglechannel or W.volume.channel))
-				W.volume.update()
-			end,
-			{description = "my toggle mute", group = "hotkeys"}),
+		-- awful.key({ }, "XF86AudioLowerVolume",
+		-- 	function ()
+		-- 		os.execute(string.format("amixer -q set %s 2%%-", W.volume.channel))
+		-- 		W.volume.update()
+		-- 	end,
+		-- 	{description = "my volume down", group = "hotkeys"}),
 
-		awful.key({ altkey }, "XF86AudioRaiseVolume",
-			function ()
-				os.execute(string.format("amixer -q set %s 100%%", W.volume.channel))
-				W.volume.update()
-			end,
-			{description = "my volume 100%", group = "hotkeys"}),
+		-- awful.key({ altkey }, "XF86AudioLowerVolume",
+		-- 	function ()
+		-- 		os.execute(string.format("amixer -q set %s toggle", W.volume.togglechannel or W.volume.channel))
+		-- 		W.volume.update()
+		-- 	end,
+		-- 	{description = "my toggle mute", group = "hotkeys"}),
 
-		awful.key({ altkey }, "End",
-			function ()
-				os.execute(string.format("amixer -q set %s 0%%", W.volume.channel))
-				W.volume.update()
-			end,
-			{description = "volume 0%", group = "hotkeys"}),
+		-- awful.key({ altkey }, "XF86AudioRaiseVolume",
+		-- 	function ()
+		-- 		os.execute(string.format("amixer -q set %s 100%%", W.volume.channel))
+		-- 		W.volume.update()
+		-- 	end,
+		-- 	{description = "my volume 100%", group = "hotkeys"}),
+
+		-- awful.key({ altkey }, "End",
+		-- 	function ()
+		-- 		os.execute(string.format("amixer -q set %s 0%%", W.volume.channel))
+		-- 		W.volume.update()
+		-- 	end,
+		-- 	{description = "volume 0%", group = "hotkeys"}),
 		-- }}}
 
 		-- MPD control{{{
@@ -332,26 +350,32 @@ function _M.get()
 				  {description = "run browser", group = "launcher"}),
 		awful.key({ modkey, "Shift" }, "q", function () awful.spawn("qutebrowser") end,
 				  {description = "open QuTebrowser", group = "launcher"}),
-		awful.key({ modkey 			}, "a", function () awful.spawn("alacritty -e byobu-tmux new-session -A -s 'nvim' nvim") end,
+		-- awful.key({ modkey 			}, "a", function () awful.spawn("alacritty -e byobu-tmux new-session -A -s 'nvim' nvim") end,
+		-- 		  {description = "run gui editor", group = "launcher"}),
+		awful.key({ modkey 			}, "a", function () awful.spawn(terminal .. " -e nvim") end,
 				  {description = "run gui editor", group = "launcher"}),
 		awful.key({ modkey 			}, "d", function () awful.spawn("rofi -show combi") end,
 				  {description = "rofi combi", group = "launcher"}),
 
 		-- Replace run prompt with ranger startup
-		awful.key({ modkey 			}, "r", function () awful.spawn("kitty ranger") end,
+		awful.key({ modkey 			}, "r", function () awful.spawn(terminal .. " ranger") end,
 				{description = "Spawn new Kitty window and open ranger", group = "launcher"}),
 
 		-- Force new ranger session with M+S+r
-		awful.key({ modkey, "Shift" }, "r", function () awful.spawn("kitty $(cd /mnt/sgext/stuff && ranger)") end,
+		awful.key({ modkey, "Shift" }, "r", function () awful.spawn(terminal .. " $(cd /mnt/sgext/stuff && ranger)") end,
 				{description = "WIP - open session named 'rng' if not exists else spawn w/ new name", group = "launcher"}),
 
 		-- Apparently "g" is unbound so use it to spawn glances
-		awful.key({ modkey 			}, "g", function () awful.spawn("alacritty -e byobu-tmux new-session -A -s 'glnc' 'glances -t 0.5 -1 -6 --diskio-iops'") end,
-				{description = "Open Glances", group = "hotkeys"}),
+		-- awful.key({ modkey 			}, "g", function () awful.spawn("alacritty -e byobu-tmux new-session -A -s 'glnc' 'glances -t 0.5 -1 -6 --diskio-iops'") end,
+		-- 		{description = "Open Glances", group = "hotkeys"}),
+		awful.key({ modkey 			}, "g", function () awful.spawn(terminal .. " -e btop") end,
+				{description = "Open btop", group = "hotkeys"}),
 
 		-- Open Vimwiki
-		awful.key({ modkey 			}, "w", function () awful.spawn("alacritty -e byobu-tmux new-session -A -s 'vwiki' nvim +:VimwikiIndex +:VimwikiDiaryIndex +':h Vimwiki' +':wincmd L' +':wincmd ='") end,
+		awful.key({ modkey 			}, "w", function () awful.spawn(terminal .. " -e byobu-tmux new-session -A -s 'vwiki' nvim +:VimwikiIndex +:VimwikiDiaryIndex +':h Vimwiki' +':wincmd L' +':wincmd ='") end,
 				{description = "open vimwiki index/diary", group = "launcher"})
+		-- awful.key({ modkey 			}, "w", function () awful.spawn("alacritty -e byobu-tmux new-session -A -s 'vwiki' nvim +:VimwikiIndex +:VimwikiDiaryIndex +':h Vimwiki' +':wincmd L' +':wincmd ='") end,
+		-- 		{description = "open vimwiki index/diary", group = "launcher"})
 		-- awful.key({ modkey 			}, "w", function () awful.spawn("xfce4-terminal -T VimWiki -e 'nvim +:VimwikiIndex'") end,
 		--         {description = "open vimwiki", group = "launcher"}),
 		-- awful.key({ modkey, "Shift" }, "w", function () awful.spawn("xfce4-terminal -T VimWikiDiary -e 'nvim +:VimwikiDiaryIndex'") end,

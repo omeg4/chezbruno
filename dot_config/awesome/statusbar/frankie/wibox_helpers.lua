@@ -7,6 +7,7 @@ local lain		= require("lain")
 -- Custom libraries
 local my_table	= awful.util.table or gears.table
 local markup	= require("lain.util.markup")
+-- local audio_widget = require("awesome-pulseaudio-widget")
 
 require("statusbar." .. RC.statusbar .. ".widgets")
 
@@ -83,6 +84,7 @@ function WB.top_right_widgets (s)
 		layout = wibox.layout.fixed.horizontal,
 		I.netdownicon, 	W.netdowninfo,
 		I.netupicon,	W.netupinfo.widget,
+    -- I.volicon,  W.audio_widget(),
 		I.volicon,		W.volume.widget,
 		I.memicon,		W.memory.widget,
 		I.cpuicon,		W.cpu.widget,

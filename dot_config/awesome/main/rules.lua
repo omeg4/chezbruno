@@ -50,6 +50,11 @@ function _M.get(clientkeys, clientbuttons)
 			  properties = { ontop = true, floating = true }
     },
 
+    -- Tilda rules
+    { rules = {class = "Tilda"},
+      properties = {floating = true, sticky = true, ontop = true, focusable = false, skip_taskbar = true}
+    },
+
     -- Awakened POE Trade 01/01/2024 {{{
     { rules = { class = "awakened-poe-trade" },
       properties = { ontop = true,

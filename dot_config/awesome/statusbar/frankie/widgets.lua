@@ -81,6 +81,22 @@ W.bat = lain.widget.bat({
 })
 --}}}
 
+-- Pulseaudio volume{{{ https://github.com/davlord/awesome-pulseaudio-widget
+-- local pulseaudio = require("awesome-pulseaudio-widget")
+
+-- I.pulseico = wibox.widget.imagebox(beautiful.widget_vol)
+-- W.pulsevol = lain.widget.alsa({
+--     settings = function()
+--         if volume_now.status == "off" then
+--             volume_now.level = volume_now.level .. "M"
+-- 			widget:set_markup(markup.fontfg(beautiful.font, colsch.color['skypink'], volume_now.level .. "% "))
+-- 		else
+-- 			widget:set_markup(markup.fontfg(beautiful.font, colsch.color['auroralgreen'], volume_now.level .. "% "))
+--         end
+--     end
+-- })
+--}}}
+
 -- ALSA volume{{{
 I.volicon = wibox.widget.imagebox(beautiful.widget_vol)
 W.volume = lain.widget.alsa({

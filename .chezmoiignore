@@ -9,14 +9,8 @@
 *.gif
 *.ssh-agent
 
-# Fedora/Laptop only
-# could also try -
-#   .chezmoi.fqdnHostname "fedora"
-#   .chezmoi.osRelease.defaultHostname "fedora"
-#   .chezmoi.osRelease.id "fedora"
-# Surprised/annoyed no reference to framework in `chezmoi data`
-# Also didn't I name this laptop `bruno-fw` when I installed Fedora?
-{{- if ne .chezmoi.hostname "fedora" }}
+# Framework laptop only
+{{- if ne .chezmoi.fqdnHostname "fw-brunocraft" }}
 .config/sway
 .config/waybar
 {{- end }}
@@ -26,7 +20,7 @@
 .bashrc
 .gitconfig
 .profile
-.config/awesome
+# .config/awesome
 .config/autostart
 .config/picom
 .vimrc
