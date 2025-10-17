@@ -1,5 +1,6 @@
 return {
 	"epwalsh/obsidian.nvim",
+  enabled = false,
   version = "*",
 	lazy = false, -- Default is true but that sucks ass
   -- ft = "markdown",

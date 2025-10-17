@@ -1,5 +1,6 @@
 return {
 	"neovim/nvim-lspconfig",
+  -- enabled = false,
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
@@ -12,7 +13,7 @@ return {
 	},
 	config = function()
 		-- import lspconfig plugin
-		local lspconfig = require("lspconfig")
+		-- local lspconfig = require("lspconfig")
 
 		-- import cmp-nvim-lsp plugin
 		local cmp_nvim_lsp = require("cmp_nvim_lsp")
@@ -87,53 +88,53 @@ return {
 
 		-- configure python server
     -- TODO: Where to put `python.venvPath` for `pyright` config?
-		lspconfig["pyright"].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-      python = {
-        venvPath = vim.fn.expand('~') .. "/" .. ".local/share/virtualenvs/"
-      }
-		})
+		-- lspconfig["pyright"].setup({
+		-- 	capabilities = capabilities,
+		-- 	on_attach = on_attach,
+  --     python = {
+  --       venvPath = vim.fn.expand('~') .. "/" .. ".local/share/virtualenvs/"
+  --     }
+		-- })
 
 		-- configure lua server (with special settings)
-		lspconfig["lua_ls"].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-			settings = { -- custom settings for lua
-				Lua = {
-					-- make the language server recognize "vim" global
-					diagnostics = {
-						globals = { "vim" },
-					},
-					workspace = {
-						-- make language server aware of runtime files
-						library = {
-							[vim.fn.expand("$VIMRUNTIME/lua")] = true,
-							[vim.fn.stdpath("config") .. "/lua"] = true,
-						},
-					},
-					completion = {
-						callSnippet = "Replace",
-					},
-				},
-			},
-		})
+		-- lspconfig["lua_ls"].setup({
+		-- 	capabilities = capabilities,
+		-- 	on_attach = on_attach,
+		-- 	settings = { -- custom settings for lua
+		-- 		Lua = {
+		-- 			-- make the language server recognize "vim" global
+		-- 			diagnostics = {
+		-- 				globals = { "vim" },
+		-- 			},
+		-- 			workspace = {
+		-- 				-- make language server aware of runtime files
+		-- 				library = {
+		-- 					[vim.fn.expand("$VIMRUNTIME/lua")] = true,
+		-- 					[vim.fn.stdpath("config") .. "/lua"] = true,
+		-- 				},
+		-- 			},
+		-- 			completion = {
+		-- 				callSnippet = "Replace",
+		-- 			},
+		-- 		},
+		-- 	},
+		-- })
 
-    lspconfig["ltex"].setup({
-      capabilities = capabilities,
-      -- :h lspconfig-server-configurations
-      filetypes = { "tex", "bib", "cls", },
-    })
+    -- lspconfig["ltex"].setup({
+    --   capabilities = capabilities,
+    --   -- :h lspconfig-server-configurations
+    --   filetypes = { "tex", "bib", "cls", },
+    -- })
 
-    lspconfig["jsonls"].setup({
-      capabilities = capabilities,
-      filetypes = { "json" },
-    })
+    -- lspconfig["jsonls"].setup({
+    --   capabilities = capabilities,
+    --   filetypes = { "json" },
+    -- })
 
-    lspconfig["ts_ls"].setup({ -- Replace "tsserver" -> "ts_ls" 09/13/24
-      capabilities = capabilities,
-      filetypes = { "typescript", "typescriptreact", "typescript.tsx", },
-    })
+    -- lspconfig["ts_ls"].setup({ -- Replace "tsserver" -> "ts_ls" 09/13/24
+    --   capabilities = capabilities,
+    --   filetypes = { "typescript", "typescriptreact", "typescript.tsx", },
+    -- })
 
 	end,
 }
