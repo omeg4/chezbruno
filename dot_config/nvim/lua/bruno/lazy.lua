@@ -26,6 +26,11 @@ require("lazy").setup({
 	change_detection = {
 		notify = false,
 	},
+  {
+    rocks = {
+      enabled = false,
+    }
+  }
 })
 
 -- require("lazy").setup({ { import = "bruno.plugins" }, { import = "bruno.plugins.lsp" } }, {

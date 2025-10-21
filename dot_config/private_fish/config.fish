@@ -4,6 +4,11 @@ if status is-interactive
   # 12/29/23 Update $PATH from ~/.zshrc
   fish_add_path -U "$HOME/.local/share/applications" "$HOME/Documents/.allmystuff/bin" "$HOME/perl5/bin" "$HOME/.luarocks/bin" "$HOME/.local/share/bob/nvim-bin" "$HOME/.pyenv"
 
+  # 10/20/25 define $EDITOR, $BROWSER
+  # https://www.reddit.com/r/fishshell/comments/jme5ks/how_do_i_set_editor_to_nvim_in_fish_shell/
+  set -gx EDITOR nvim
+  set -gx EDITOR vivaldi
+
   # `pj` plugin config - define project directories
   set -U PROJECT_PATHS "HOME/poedev" "HOME/poedev/DashOfExile/" "HOME/Documents/.allmystuff/bin/" "HOME/.config/awesome" "HOME/.config/fish" "HOME/.config/nvim" "HOME/.config/wezterm/"
 
@@ -21,7 +26,7 @@ if status is-interactive
 
   zoxide init fish | source
 
-  source "$HOME/.asdf/asdf.fish"
+  # source "$HOME/.asdf/asdf.fish"
   # }}}
 
 end
