@@ -1,6 +1,6 @@
 return {
 	"epwalsh/obsidian.nvim",
-  enabled = false,
+  -- enabled = false,
   version = "*",
 	lazy = false, -- Default is true but that sucks ass
   -- ft = "markdown",
@@ -33,10 +33,10 @@ return {
           name = "main",
           path = vim.fn.expand("~") .. "/Documents/bruno",
         },
-        {
-          name = "dev",
-          path = vim.fn.expand("~") .. "/Documents/brunobsidian",
-        },
+        -- {
+        --   name = "dev",
+        --   path = vim.fn.expand("~") .. "/Documents/brunobsidian",
+        -- },
       },
       completion = {
         nvim_cmp = true,
@@ -68,7 +68,7 @@ return {
         alias_format = "%B %-d, %Y",
       },
       templates = {
-        subdir = "templates",
+        subdir = "Templates",
         date_format = "%Y-%m-%d",
         time_format = "%H:%M",
         substitutions = {

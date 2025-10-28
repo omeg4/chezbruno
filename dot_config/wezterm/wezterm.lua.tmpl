@@ -21,7 +21,7 @@ config.color_scheme = 'catppuccin-mocha'
 config.font = wezterm.font('JetBrainsMono Nerd Font')
 {{ if eq .chezmoi.fqdnHostname "fw-brunocraft" -}}
 -- Framework
-config.font_size = 16
+config.font_size = 20
 {{ else }}
 -- Desktop
 config.font_size = 14
@@ -74,6 +74,10 @@ config.keys = {
   },
 }
 
+{{ if eq .chezmoi.fqdnHostname "fw-brunocraft" -}}
 config.enable_wayland = true
+{{ else }}
+config.enable_wayland = false
+{{- end }}
 
 return config

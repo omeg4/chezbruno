@@ -1,0 +1,11 @@
+{{ if eq .chezmoi.os "arch" -}}
+#!/bin/bash
+
+alias yy='yay --answerclean a --answerdiff n --answeredit n --noremovemake --noconfirm --sudoloop --color always'
+
+yy -S <<EOF
+{{ range .packages.arch.yay -}}
+{{ . | quote }}
+{{ end -}}
+EOF
+{{ end -}}

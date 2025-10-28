@@ -108,11 +108,11 @@ set preview_images true
 #   Tmux is unsupported.
 ### chezmoi template ###
 {{- if eq .chezmoi.hostname "fw-brunocraft" }}
-set preview_images_method iterm2
+set preview_images_method w3m
 {{- else if eq .chezmoi.hostname "brunocraft" }}
 set preview_images_method sixel
 {{- else }}
-set preview_images_mathod iterm2
+set preview_images_mathod w3m
 {{- end }}
 
 # Delay in seconds before displaying an image with the w3m method.
