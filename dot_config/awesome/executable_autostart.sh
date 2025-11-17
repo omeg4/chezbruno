@@ -48,7 +48,6 @@ run bitwarden-desktop
 run blueman-applet
 run surfshark
 run discord
-run gnome-keyring-daemon --start --components=ssh
 
 #fix stupid apple keyb default
 #sudo modprobe -rv hid_apple && sudo modprobe -v hid_apple fnmode=2

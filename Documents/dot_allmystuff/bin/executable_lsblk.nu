@@ -3,7 +3,7 @@
 
 # TODO: Add input flag to echo command
 
-lsblk -lJo MODEL,FSTYPE,NAME,SIZE,MOUNTPOINT,LABEL,PARTLABEL,UUID |
+lsblk -lJo NAME,SIZE,MODEL,FSTYPE,UUID,MOUNTPOINT,LABEL,PARTLABEL,PARTUUID |
 from json |
 get blockdevices |
 sort-by 'name'
