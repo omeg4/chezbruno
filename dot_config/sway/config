@@ -18,14 +18,15 @@ set $term wezterm
 # on the original workspace that the command was run on.
 set $menu rofi -show combi
 
-set $browser vivaldi-stable
+set $browser vivaldi-snapshot
 
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-#output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+# output * bg /home/bruno/Pictures/wallpapers/wallpaper_1.jpg fill
+output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 # output "eDP-1" mode 2560x1600 scale 1.5 bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-output "eDP-1" mode 2560x1600 scale 1.5 bg /home/bruno/Pictures/bgs/alena-aenami-for-y1900.jpg fill
+# output "eDP-1" mode 2560x1600 scale 1.5 bg /home/bruno/Pictures/bgs/alena-aenami-for-y1900.jpg fill
 #
 # Example configuration:
 #
