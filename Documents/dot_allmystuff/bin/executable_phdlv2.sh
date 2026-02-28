@@ -19,6 +19,8 @@ elif [[ "$URL" == *"xhamster.com"* ]]; then
 	DLARG='XHAMDL_PROAM'
 elif [[ "$URL" == *"mydirtyhobby"* ]]; then
 	DLARG='MDHDL_PROAM'
+elif [[ "$URL" == *"nsfw247"* ]]; then
+  DLARG='N247DL_PROAM'
 else
 	DLARG='RNDL'
 fi

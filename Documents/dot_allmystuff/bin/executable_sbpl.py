@@ -13,11 +13,18 @@ from bs4 import BeautifulSoup as bs
 # TODO: Split up `yt-opts` for different use cases, merging as needed for each `YoutubeDL` call.
 #   * dict_merge = { **dict1, **dict2, ..., **{ "ad-hoc_key1" : "ad-hoc_val1", ... } }
 
+stuff_dir = os.path.join(
+    'home', 'bruno', 'datad', 'stuff'
+)
+dlrx = os.path.join( stuff_dir, 'dlrx.txt' )
+
 yt_opts = {
-    "download_archive" : "/mnt/sgext/info/dlrx.txt",
+    "download_archive" : dlrx,
     "paths" : {
-        "home" : "/mnt/sgext/stuff/",
-        "temp" : "/home/bruno/tmpydl"
+        "home" : stuff_dir,
+        "temp" : os.path.join(
+            'home','bruno','data','tmpydl'
+        ),
     },
     "outtmpl" : { "default":
         '%(uploader)s__%(title)s_%(id)s_pl-%(playlist_index)sof%(playlist_count)s__PYDL.%(ext)s'
@@ -62,8 +69,8 @@ def parse_sb_url( sb_url ):
     #-@diagnostic disable: string
     '''
     Parse the input URL and determine if it's a video (canonical), playlist, or playlist video.
-        Canonical:  "https://spankbang.com/video/\w+"
-        Playlist:   "https://spankbang.com/(\w{5})/playlist/(.*)"
+        Canonical:  "https://spankbang.com/video/\\w+"
+        Playlist:   "https://spankbang.com/(\\w{5})/playlist/(.*)"
     '''
 
 def get_pl_vid_urls_from_pl( pl_url ):
@@ -80,7 +87,7 @@ def get_pl_vid_urls_from_pl( pl_url ):
     return list_pl_vids_on_page
 
 def get_canonical_url_from_pl_vid( pl_vid_url ):
-    req = Request( pl_vid_url, headers={ 'User-Agent': 'Mozilla/5.0' } )
+    req = Request( pl_vid_url, headers={ 'User-Agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36" } )
     html_page = urlopen(req).read()
     soup = bs(html_page, "html.parser")
     canonical_url = soup.find( "link", attrs={"rel": "canonical"} ).get("href")

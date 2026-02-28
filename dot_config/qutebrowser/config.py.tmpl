@@ -425,7 +425,7 @@ config.set('content.autoplay', False, 'https://*')
 config.set('downloads.location.directory', '{{- .chezmoi.homeDir -}}/data/stuff/')
 {{ else if eq .chezmoi.fqdnHostname "brunocraft" }}
 # Desktop
-config.set('downloads.location.directory', '/mnt/sgext/stuff/')
+config.set('downloads.location.directory', '{{- .chezmoi.homeDir -}}/wdint/stuff')
 {{ else }}
 config.set('downloads.location.directory', '{{- .chezmoi.homeDir -}}/Downloads/')
 {{- end }}
