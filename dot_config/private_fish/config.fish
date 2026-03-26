@@ -8,7 +8,7 @@ if status is-interactive
   # 10/20/25 define $EDITOR, $BROWSER
   # https://www.reddit.com/r/fishshell/comments/jme5ks/how_do_i_set_editor_to_nvim_in_fish_shell/
   set -gx EDITOR nvim
-  set -gx EDITOR vivaldi
+  set -gx BROWSER vivaldi
 
   # `pj` plugin config - define project directories
   set -U PROJECT_PATHS "HOME/poedev" "HOME/poedev/DashOfExile/" "HOME/Documents/.allmystuff/bin/" "HOME/.config/awesome" "HOME/.config/fish" "HOME/.config/nvim" "HOME/.config/wezterm/"
