@@ -4,7 +4,6 @@ local _M = {
 	modkey       = "Mod4",
 	altkey       = "Mod1",
 	terminal     = "wezterm", -- "wezterm -e fish",
-	-- terminal     = "wezterm --config-file " .. home .. "/.config/wezterm/wezterm.lua", -- "wezterm -e fish",
 	term_alt      = "kitty -e fish",
 	-- terminal     = "alacritty -e byobu new-session",
 	-- term_alt      = "alacritty",

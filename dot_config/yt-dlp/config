@@ -2,24 +2,14 @@
 -o "UNPROC__%(uploader,creator,channel,uploader_id,channel_id)s__%(title,alt_title,id,display_id)s__DL.%(ext)s"
 
 # Use temp DL directory on SSD
-{{ if eq .chezmoi.fqdnHostname "fw-brunocraft" -}}
-## Framework
--P "temp:{{- .chezmoi.homeDir -}}/data/tmpydl/"
--P "home:{{- .chezmoi.homeDir -}}/data/stuff/"
-{{ else if eq .chezmoi.fqdnHostname "brunocraft" -}}
-## Desktop
 -P "temp:/home/bruno/tmpydl/"
--P "home:/mnt/sgext/stuff/"
-{{- end }}
+-P "home:/home/bruno/wdint/stuff/"
 
 # keep a download archive
-{{ if eq .chezmoi.fqdnHostname "fw-brunocraft" -}}
-## Framework
---download-archive '{{- .chezmoi.homeDir -}}/data/info/dlrx.txt'
-{{ else if eq .chezmoi.fqdnHostname "brunocraft" -}}
-## Desktop
---download-archive '/mnt/sgext/info/dlrx.txt'
-{{- end }}
+--download-archive "/home/bruno/sgint/info/dlrx.txt"
+
+# netrc
+--netrc-location "/home/bruno/sgint/info/.netrc"
 
 # cookies
 #--cookies '/mnt/sgext/info/cookies.txt'
@@ -92,13 +82,7 @@
 --alias argfmt '-o "%(uploader)s__%(title)s_%(id)s_pl-%(playlist_index)sof%(playlist_count)s__{0}.%(ext)s"'
 --alias phfmt '-o "%(uploader)s__%(title)s_%(id)s_pl-%(playlist_index)sof%(playlist_count)s__PHDL.%(ext)s"'
 
-{{ if eq .chezmoi.fqdnHostname "fw-brunocraft" -}}
-## Framework
---alias base '--cookies "{{- .chezmoi.homeDir -}}/data/info/cookies.txt" --yes-playlist --playlist-reverse'
-{{ else if eq .chezmoi.fqdnHostname "brunocraft" -}}
-## Desktop
---alias base '--cookies "/mnt/sgext/stuff/cookies.txt" --yes-playlist --playlist-reverse'
-{{- end }}
+
 --alias spbg '-u "smutthrowaway1234" -p "flcutters28" --yes-playlist'
 
 # meta-aliases for generic use
@@ -111,17 +95,7 @@
 # --alias sbpl "--cmmn --ztry --sdvq --dlrx --phck --spdl -N 3"
 
 # cookies aliases
-{{ if eq .chezmoi.fqdnHostname "fw-brunocraft" -}}
-## Framework
---alias infocook '--cookies "{{- .chezmoi.homeDir -}}/data/info/cookies.txt"'
---alias stuffcook '--cookies "{{- .chezmoi.homeDir -}}/data/stuff/cookies.txt"'
---alias vivacook '--cookies "{{- .chezmoi.homeDir -}}/data/info/vivaldi/cookies.txt"'
-{{ else if eq .chezmoi.fqdnHostname "brunocraft" -}}
-## Desktop
---alias infocook '--cookies "/mnt/sgext/info/cookies.txt"'
---alias stuffcook '--cookies "/mnt/sgext/stuff/cookies.txt"'
---alias vivacook '--cookies "/mnt/sgext/info/vivaldi/cookies.txt"'
-{{- end }}
+
 --alias qutecook '--cookies-from-browser "chrome:/home/bruno/.local/share/qutebrowser/webengine"'
 
 --alias audio '--vivacook --download-archive "~/Music/dlrx.txt" --audio-quality 0 --audio-format "mp3" --extract-audio --embed-thumbnail -P "~/Music/" -o "%(title)s_%(id)s__ytdl.%(ext)s"'
