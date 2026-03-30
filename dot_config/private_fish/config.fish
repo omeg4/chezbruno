@@ -1,5 +1,8 @@
 if status is-interactive
   # Commands to run in interactive sessions can go here
+  if not set -q ZELLIJ
+    exec zellij
+  end
 
   # 12/29/23 Update $PATH from ~/.zshrc
   fish_add_path -U "$HOME/.local/share/applications" "$HOME/Documents/.allmystuff/bin" "$HOME/perl5/bin" "$HOME/.luarocks/bin" "$HOME/.local/share/bob/nvim-bin" "$HOME/.pyenv"
@@ -32,6 +35,8 @@ if status is-interactive
 
   # source "$HOME/.asdf/asdf.fish"
   # }}}
+
+  # exec zellij
 
 end
 
