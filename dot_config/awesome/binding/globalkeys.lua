@@ -343,6 +343,10 @@ function _M.get()
 		--             ) end,
 		--           {description = "pick-a-cheatsheet", group = "launcher"}),
 
+		-- Rofi cheatsheet (CLI / Paths / Snippets) -- see ~/.local/bin/cheatsheet
+		awful.key({ modkey 			}, "slash", function () awful.spawn(os.getenv("HOME") .. "/.local/bin/cheatsheet") end,
+				  {description = "rofi cheatsheet", group = "launcher"}),
+
 			-- This is supposed to be an interactive tmux session chooser, but I'm having trouble escaping the quotation marks
 		-- awful.key({ modkey,        	}, "'", function () awful.spawn("xfce4-terminal -x tmux list-sessions | sed -E 's/:.*$//' | grep -v \"^$(tmux display-message -p '#S')\$\" | fzf --reverse | xargs tmux switch-client -t") end,
 		--           {description = "Open a new TMUX session", group = "launcher"}),

@@ -1,0 +1,655 @@
+#!/usr/bin/env bash
+#
+# cheatsheet — a rofi popup of CLI commands, paths and code snippets.
+#
+#   cheatsheet                    open the popup (Enter / click copies the entry)
+#   cheatsheet QUERY              open the popup pre-filtered with QUERY
+#   cheatsheet -a [CONTENT]       add an entry (no CONTENT: use the clipboard)
+#   cheatsheet --help             full usage
+#
+# Data lives in a JSON Lines file ($CHEATSHEET_FILE, default
+# ~/.config/cheatsheet/cheatsheet.jsonl), one entry per line:
+#   {"category":"CLI"|"Paths"|"Snippets","lang":"Python","content":"...","desc":"...","added":"2026-10-12"}
+# One entry per line lets git merge additions from several machines with
+# `merge=union` (see sync_now).
+#
+# If the data file is managed by chezmoi, every change is committed and pushed
+# in the background (disable with --no-sync or CHEATSHEET_SYNC=0).
+
+set -euo pipefail
+
+DATA="${CHEATSHEET_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/cheatsheet/cheatsheet.jsonl}"
+THEME="${CHEATSHEET_THEME:-$HOME/.config/hypr/rofi/cheatsheet.rasi}"
+MATCHING="${CHEATSHEET_MATCHING:-normal}"   # rofi -matching: normal|fuzzy|glob|regex|prefix
+SYNC="${CHEATSHEET_SYNC:-1}"
+FORCE=0
+
+# Language aliases (lowercase, leading dot stripped) -> canonical display name.
+declare -A LANGS=(
+	[py]=Python [python]=Python [python3]=Python [ipython]=Python [pyw]=Python
+	[tex]=LaTeX [latex]=LaTeX [sty]=LaTeX [bib]=BibTeX [bibtex]=BibTeX
+	[re]=Regex [regex]=Regex [regexp]=Regex [pcre]=Regex
+	[sh]=Bash [bash]=Bash [shell]=Bash [zsh]=Zsh [fish]=Fish
+	[js]=JavaScript [javascript]=JavaScript [mjs]=JavaScript [node]=JavaScript
+	[ts]=TypeScript [typescript]=TypeScript
+	[c]=C [h]=C [cpp]=C++ [c++]=C++ [cxx]=C++ [cc]=C++ [hpp]=C++
+	[rs]=Rust [rust]=Rust [go]=Go [golang]=Go [lua]=Lua
+	[java]=Java [kt]=Kotlin [kotlin]=Kotlin
+	[r]=R [jl]=Julia [julia]=Julia [matlab]=MATLAB
+	[sql]=SQL [sqlite]=SQL [psql]=SQL [postgres]=SQL
+	[json]=JSON [jq]=jq [yml]=YAML [yaml]=YAML [toml]=TOML [ini]=INI
+	[md]=Markdown [markdown]=Markdown [html]=HTML [htm]=HTML [css]=CSS [scss]=CSS
+	[vim]=Vim [vimscript]=Vim [viml]=Vim [nvim]=Vim
+	[awk]=Awk [sed]=Sed [nix]=Nix [make]=Make [makefile]=Make
+	[docker]=Docker [dockerfile]=Docker [git]=Git
+	[ps1]=PowerShell [powershell]=PowerShell [pwsh]=PowerShell
+	[hypr]=Hyprland [hyprland]=Hyprland [rasi]=Rasi
+)
+
+die()  { printf 'cheatsheet: %s\n' "$*" >&2; exit 1; }
+warn() { printf 'cheatsheet: %s\n' "$*" >&2; }
+
+usage() {
+	cat <<-'EOF'
+	Usage:
+	  cheatsheet [QUERY]                 Open the rofi popup (optionally pre-filtered)
+	  cheatsheet -a [CONTENT] [OPTIONS]  Add an entry
+	  cheatsheet -L | --list [CATEGORY]  Print entries to the terminal
+	  cheatsheet -e | --edit             Open the data file in $EDITOR
+	  cheatsheet --sync                  Commit/pull/push the data file via chezmoi now
+	  cheatsheet --langs                 List known snippet languages
+
+	Add options:
+	  -a, --add [CONTENT]   Content to add. If omitted, the clipboard is used.
+	                        '.' adds the current directory; '-' reads stdin.
+	                        If it starts with '-', use --add=CONTENT or put '-- CONTENT' last.
+	  -d, --desc DESC       Description (prompted for interactively if omitted).
+	  -l, --lang LANG       Snippet language (py, python, Python, .py ... all -> Python).
+	                        Implies category Snippets.
+	  -p, --pwd             Add the current directory (same as '-a .').
+	  -c, --category CAT    Force category: cli | paths | snippets.
+	                        Otherwise: --lang -> Snippets, an existing path -> Paths,
+	                        anything else -> CLI.
+	  -f, --force           Skip the secret check.
+
+	General options:
+	  --no-sync             Don't commit/push this change via chezmoi. Note: the
+	                        next synced change pushes the whole file anyway.
+
+	Popup keys:
+	  Enter / click    copy entry to clipboard
+	  Alt+1..4         show All / CLI / Paths / Snippets
+	  Shift+Delete     delete entry (asks for confirmation)
+
+	Environment:
+	  CHEATSHEET_FILE      data file   (default ~/.config/cheatsheet/cheatsheet.jsonl)
+	  CHEATSHEET_THEME     rofi theme  (default ~/.config/hypr/rofi/cheatsheet.rasi)
+	  CHEATSHEET_MATCHING  rofi matching method (default normal; try fuzzy)
+	  CHEATSHEET_SYNC      0 disables chezmoi sync (default 1)
+	EOF
+}
+
+ensure_data() {
+	[[ -f $DATA ]] && return
+	mkdir -p "$(dirname "$DATA")"
+	: >"$DATA"
+}
+
+# Rewrite the data file through a jq filter applied to the slurped array; the
+# filter must output the new array. Atomic, one entry per line.
+jq_update() {
+	local tmp
+	tmp=$(mktemp "$DATA.XXXXXX")
+	if jq -c -s "$@" "$DATA" | jq -c '.[]' >"$tmp"; then
+		mv "$tmp" "$DATA"
+	else
+		rm -f "$tmp"
+		die "failed to update $DATA"
+	fi
+}
+
+# jq over the whole file as one array.
+jqs() { jq -s "$@" "$DATA"; }
+
+clip_copy() {
+	if [[ -n ${WAYLAND_DISPLAY:-} ]] && command -v wl-copy >/dev/null; then
+		wl-copy
+	elif command -v xclip >/dev/null; then
+		xclip -selection clipboard
+	elif command -v xsel >/dev/null; then
+		xsel --clipboard --input
+	else
+		die "no clipboard tool found (install wl-clipboard or xclip)"
+	fi
+}
+
+clip_paste() {
+	if [[ -n ${WAYLAND_DISPLAY:-} ]] && command -v wl-paste >/dev/null; then
+		wl-paste --no-newline 2>/dev/null || true
+	elif command -v xclip >/dev/null; then
+		xclip -selection clipboard -o 2>/dev/null || true
+	elif command -v xsel >/dev/null; then
+		xsel --clipboard --output 2>/dev/null || true
+	else
+		die "no clipboard tool found (install wl-clipboard or xclip)"
+	fi
+}
+
+notify() {
+	local body=$2
+	body=${body//&/&amp;}; body=${body//</&lt;}; body=${body//>/&gt;}
+	if command -v notify-send >/dev/null; then
+		notify-send -a cheatsheet ${3:+-u "$3"} -- "$1" "$body" || true
+	fi
+}
+
+normalize_category() {
+	case ${1,,} in
+		cli|c|cmd|command|commands) echo CLI ;;
+		path|paths|p|dir|dirs|file|files) echo Paths ;;
+		snippet|snippets|snip|s|code) echo Snippets ;;
+		*) die "unknown category '$1' (use cli, paths or snippets)" ;;
+	esac
+}
+
+normalize_lang() {
+	local raw=${1#.} key existing
+	key=${raw,,}
+	[[ -n $key ]] || die "empty language"
+	if [[ -n ${LANGS[$key]:-} ]]; then
+		echo "${LANGS[$key]}"
+		return
+	fi
+	# Reuse the spelling of a language already in the cheatsheet, if any.
+	existing=$(jqs -r --arg k "$key" \
+		'[.[] | .lang // empty | select(ascii_downcase == $k)][0] // empty')
+	if [[ -n $existing ]]; then
+		echo "$existing"
+		return
+	fi
+	warn "new language '${raw^}' (add an alias to LANGS in $0 to standardize it)"
+	echo "${raw^}"
+}
+
+# Paths are stored with ~ so the cheatsheet works across machines/usernames.
+tildify() {
+	local p=$1
+	if [[ $p == "$HOME" || $p == "$HOME"/* ]]; then
+		p="~${p#"$HOME"}"
+	fi
+	printf '%s' "$p"
+}
+
+expand_tilde() {
+	local p=$1
+	[[ $p == "~" || $p == "~/"* ]] && p="$HOME${p#\~}"
+	printf '%s' "$p"
+}
+
+trim() {
+	local s=$1
+	# trailing whitespace/newlines
+	s="${s%"${s##*[![:space:]]}"}"
+	# leading blank lines (keep indentation of the first real line)
+	while [[ $s == $'\n'* || $s == $'\r'* ]]; do s=${s:1}; done
+	printf '%s' "$s"
+}
+
+# --- Secret check -------------------------------------------------------------
+# Entries end up in a (possibly public) git repo, so refuse anything that looks
+# like a credential unless confirmed. Prints the reason and returns 0 on a hit.
+secret_reason() {
+	local s=$1 tok
+	local -a checks=(
+		'-----BEGIN ([A-Z0-9]+ )*PRIVATE KEY-----'                         'a private key'
+		'(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}' 'a GitHub token'
+		'glpat-[A-Za-z0-9_-]{20,}'                                          'a GitLab token'
+		'sk-[A-Za-z0-9_-]{20,}'                                             'an API key (sk-...)'
+		'(AKIA|ASIA)[0-9A-Z]{16}'                                           'an AWS access key'
+		'AIza[0-9A-Za-z_-]{35}'                                             'a Google API key'
+		'xox[abprs]-[A-Za-z0-9-]{10,}'                                      'a Slack token'
+		'eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'     'a JWT'
+		'[A-Za-z][A-Za-z0-9+.-]*://[^/[:space:]:@]+:[^/[:space:]@]+@'       'credentials in a URL'
+	)
+	local i
+	for ((i = 0; i < ${#checks[@]}; i += 2)); do
+		if [[ $s =~ ${checks[i]} ]]; then
+			printf '%s' "${checks[i + 1]}"
+			return 0
+		fi
+	done
+	# password=..., token: "...", api_key = ... (ignores $VARS, <placeholders>, {templates})
+	if grep -qiE "(pass(word|wd)?|secret|token|api[_-]?key|auth)[\"']?[[:space:]]*[:=][[:space:]]*[\"']?[^[:space:]\"'\$<{][^[:space:]\"']{5,}" <<<"$s"; then
+		printf 'a password/secret assignment'
+		return 0
+	fi
+	# Long random-looking strings: 32+ chars mixing upper, lower and digits.
+	while read -r tok; do
+		[[ $tok =~ [A-Z] && $tok =~ [a-z] && $tok =~ [0-9] ]] || continue
+		printf 'a long random-looking string (%s…)' "${tok:0:8}"
+		return 0
+	done < <(grep -oE '[A-Za-z0-9+/=_-]{32,}' <<<"$s" || true)
+	return 1
+}
+
+# Returns 0 if the content may be stored (clean, --force, or user confirmed).
+secret_ok() {
+	local content=$1 reason
+	((FORCE)) && return 0
+	reason=$(secret_reason "$content") || return 0
+	if [[ -t 0 && -t 1 ]]; then
+		printf '\e[1;31mWarning:\e[0m this looks like it contains %s.\n' "$reason"
+		printf 'Cheatsheet entries are pushed to your dotfiles repo, which may be PUBLIC.\n'
+		local ans
+		read -r -p "Add it anyway? [y/N] " ans || true
+		[[ ${ans,,} == y || ${ans,,} == yes ]]
+	else
+		notify "Cheatsheet: entry refused" "Looks like it contains $reason. Use --force to add it anyway." critical
+		warn "refusing: content looks like it contains $reason (use --force to override)"
+		return 1
+	fi
+}
+
+# --- chezmoi sync -------------------------------------------------------------
+
+sync_fail() {
+	warn "sync: $*"
+	[[ -t 2 ]] || notify "Cheatsheet sync failed" "$*" critical
+	return 1
+}
+
+# Commit the data file through chezmoi, rebase on the remote and push.
+sync_now() {
+	local msg=${1:-"cheatsheet: sync"} src srcdir rel lock behind
+	command -v chezmoi >/dev/null || { sync_fail "chezmoi not installed"; return 1; }
+	src=$(chezmoi source-path "$DATA" 2>/dev/null) ||
+		{ sync_fail "$DATA is not managed by chezmoi (chezmoi add it first)"; return 1; }
+	srcdir=$(chezmoi source-path)
+	rel=${src#"$srcdir"/}
+	local -a g=(git -C "$srcdir")
+
+	# Serialize concurrent syncs (e.g. several quick adds).
+	lock="${XDG_RUNTIME_DIR:-/tmp}/cheatsheet-sync.lock"
+	exec 9>"$lock"
+	flock -w 120 9 || { sync_fail "timed out waiting for another sync"; return 1; }
+
+	# Never prompt: there is usually no terminal (hotkey / rofi).
+	export GIT_TERMINAL_PROMPT=0 GIT_SSH_COMMAND="ssh -o BatchMode=yes -o ConnectTimeout=10"
+
+	# Union merges keep both machines' added lines instead of conflicting.
+	# info/attributes applies locally right away; .gitattributes travels with
+	# the repo for the other machines.
+	local attr="$rel merge=union" info
+	info=$("${g[@]}" rev-parse --git-path info/attributes)
+	[[ $info == /* ]] || info="$srcdir/$info"
+	mkdir -p "$(dirname "$info")"
+	grep -qxF "$attr" "$info" 2>/dev/null || printf '%s\n' "$attr" >>"$info"
+	grep -qxF "$attr" "$srcdir/.gitattributes" 2>/dev/null || printf '%s\n' "$attr" >>"$srcdir/.gitattributes"
+
+	chezmoi re-add "$DATA" || { sync_fail "chezmoi re-add failed"; return 1; }
+	"${g[@]}" add -- "$rel" .gitattributes
+	# Commit only these two paths, never anything else that happens to be staged.
+	if ! "${g[@]}" diff --cached --quiet -- "$rel" .gitattributes; then
+		"${g[@]}" commit -q -m "$msg" -- "$rel" .gitattributes ||
+			{ sync_fail "git commit failed in $srcdir"; return 1; }
+	fi
+
+	"${g[@]}" rev-parse -q --verify '@{u}' >/dev/null ||
+		{ sync_fail "no upstream branch configured in $srcdir; committed locally"; return 1; }
+	"${g[@]}" fetch -q ||
+		{ sync_fail "git fetch failed (offline or ssh key locked?); committed locally, will push next sync"; return 1; }
+
+	behind=$("${g[@]}" rev-list --count 'HEAD..@{u}')
+	if ((behind > 0)); then
+		# Same strategy as `chezmoi update`.
+		if ! "${g[@]}" pull -q --rebase --autostash; then
+			"${g[@]}" rebase --abort >/dev/null 2>&1 || true
+			sync_fail "git pull --rebase failed; committed locally, resolve in $srcdir"
+			return 1
+		fi
+		# Bring the merged data file (with the other machines' entries) into place.
+		chezmoi apply --force "$DATA" || { sync_fail "chezmoi apply of $DATA failed"; return 1; }
+	fi
+
+	# Only push automatically if every unpushed commit is ours; don't publish
+	# unrelated local commits behind your back.
+	local other
+	other=$("${g[@]}" log --format=%s '@{u}..HEAD' | grep -vc '^cheatsheet: ' || true)
+	if ((other > 0)); then
+		sync_fail "$other unpushed non-cheatsheet commit(s) in $srcdir; not pushing automatically (run: chezmoi git push)"
+		return 1
+	fi
+	if [[ -n $("${g[@]}" rev-list '@{u}..HEAD') ]]; then
+		"${g[@]}" push -q ||
+			{ sync_fail "git push failed; committed locally, will push next sync"; return 1; }
+	fi
+}
+
+# Sync in the background (if enabled and the data file is managed by chezmoi).
+sync_data() {
+	local msg=$1
+	[[ $SYNC == 1 ]] || return 0
+	command -v chezmoi >/dev/null || return 0
+	chezmoi source-path "$DATA" >/dev/null 2>&1 || return 0
+	[[ -t 1 ]] && echo "Syncing via chezmoi in the background (failures show as notifications)."
+	(sync_now "$msg") </dev/null >/dev/null 2>&1 &
+	disown
+}
+
+short() { local s; s=$(head -n1 <<<"$1"); ((${#s} > 50)) && s="${s:0:49}…"; printf '%s' "$s"; }
+
+# --- Commands -----------------------------------------------------------------
+
+cmd_add() {
+	local content=$1 have_content=$2 desc=$3 lang=$4 cat=$5 use_pwd=$6 from=""
+
+	if ((use_pwd)) || [[ $have_content == 1 && $content == . ]]; then
+		content=$PWD
+		[[ -z $cat ]] && cat=Paths
+	elif [[ $have_content == 1 && $content == - ]]; then
+		content=$(cat)
+		from="stdin"
+	elif [[ $have_content == 0 ]]; then
+		content=$(clip_paste)
+		from="clipboard"
+	fi
+
+	content=$(trim "$content")
+	[[ -n $content ]] || die "nothing to add${from:+ ($from is empty)}"
+
+	[[ -n $cat ]] && cat=$(normalize_category "$cat")
+	if [[ -n $lang ]]; then
+		[[ -z $cat || $cat == Snippets ]] || die "--lang only applies to snippets"
+		cat=Snippets
+		lang=$(normalize_lang "$lang")
+	fi
+	if [[ -z $cat ]]; then
+		local p
+		p=$(expand_tilde "$content")
+		if [[ $content != *$'\n'* && $p == */* && -e $p ]]; then
+			cat=Paths
+		else
+			cat=CLI
+		fi
+	fi
+	[[ $cat == Snippets && -z $lang ]] && die "snippets need a language: --lang LANG"
+
+	if [[ $cat == Paths ]]; then
+		[[ $content == *$'\n'* ]] && die "a path can't span multiple lines"
+		local p
+		p=$(expand_tilde "$content")
+		[[ -e $p ]] && p=$(realpath -s -- "$p") || warn "path '$p' does not exist (adding anyway)"
+		content=$(tildify "$p")
+	fi
+
+	local label=$cat
+	[[ -n $lang ]] && label="Snippets/$lang"
+
+	if jqs -e --arg c "$content" --arg cat "$cat" \
+		'any(.[]; .content == $c and .category == $cat)' >/dev/null; then
+		die "already in $label"
+	fi
+
+	if [[ -t 0 && -t 1 ]]; then
+		printf '\e[1mAdding to %s%s:\e[0m\n' "$label" "${from:+ (from $from)}"
+		printf '%s\n' "$content" | head -n 8 | sed 's/^/  │ /'
+		(($(printf '%s\n' "$content" | wc -l) > 8)) && printf '  │ …\n'
+	fi
+
+	secret_ok "$content" || die "not added"
+	[[ -n $desc ]] && { secret_ok "$desc" || die "not added"; }
+
+	if [[ -z $desc && -t 0 && -t 1 ]]; then
+		read -r -e -p "Description (optional): " desc || true
+		[[ -n $desc ]] && { secret_ok "$desc" || die "not added"; }
+	fi
+
+	# Make sure the file ends with a newline before appending.
+	[[ -s $DATA && -n $(tail -c1 "$DATA") ]] && printf '\n' >>"$DATA"
+	jq -cn --arg cat "$cat" --arg lang "$lang" --arg c "$content" \
+		--arg d "$desc" --arg t "$(date +%F)" \
+		'{category: $cat} + (if $lang == "" then {} else {lang: $lang} end)
+		 + {content: $c, desc: $d, added: $t}' >>"$DATA"
+	printf 'Added to %s: %s\n' "$label" "$(head -n1 <<<"$content")"
+	sync_data "cheatsheet: add $label: $(short "$content")"
+}
+
+cmd_langs() {
+	{
+		printf '%s\n' "${LANGS[@]}"
+		[[ -f $DATA ]] && jq -r '.lang // empty' "$DATA"
+	} | sort -fu
+}
+
+cmd_list() {
+	local filter=All
+	[[ -n ${1:-} ]] && filter=$(normalize_category "$1")
+	local bold="" dim="" reset=""
+	if [[ -t 1 ]]; then bold=$'\e[1;34m' dim=$'\e[2m' reset=$'\e[0m'; fi
+	jqs -r --arg f "$filter" --arg b "$bold" --arg d "$dim" --arg r "$reset" '
+		def order: {"CLI": 0, "Paths": 1, "Snippets": 2}[.category] // 3;
+		map(select($f == "All" or .category == $f))
+		| group_by([order, (.lang // "" | ascii_downcase)])
+		| .[]
+		| (.[0] | if .category == "Snippets" then "Snippets/\(.lang)" else .category end) as $title
+		| "\n\($b)## \($title)\($r)",
+		  (.[] | (if .desc != "" then "\($d)# \(.desc)\($r)\n" else "" end) + .content
+		       + (if .category == "Snippets" then "\n" else "" end))
+	'
+}
+
+cmd_edit() {
+	local before
+	before=$(mktemp)
+	cp "$DATA" "$before"
+	cmd_edit_inner "$before" || { rm -f "$before"; return 1; }
+	rm -f "$before"
+}
+
+cmd_edit_inner() {
+	local before=$1
+
+	"${VISUAL:-${EDITOR:-nvim}}" "$DATA"
+
+	if ! jq -s empty "$DATA" 2>/dev/null; then
+		warn "$DATA is no longer valid JSON Lines! Fix it (cheatsheet -e); not syncing."
+		return 1
+	fi
+	# Normalize back to one compact entry per line (needed for union merges).
+	jq_update '.'
+	cmp -s "$before" "$DATA" && { echo "No changes."; return 0; }
+
+	# Secret-check only new or changed entries.
+	local line content reason
+	local -a flagged=()
+	while IFS= read -r line; do
+		[[ -n $line ]] || continue
+		content=$(jq -r '"\(.content)\n\(.desc // "")"' <<<"$line")
+		if reason=$(secret_reason "$content"); then
+			printf '\e[1;31mWarning:\e[0m entry looks like it contains %s:\n  %s\n' "$reason" "$(short "$content")"
+			flagged+=("$line")
+		fi
+	done < <(comm -13 <(jq -c . "$before" | sort) <(sort "$DATA"))
+
+	if ((${#flagged[@]})) && ((!FORCE)); then
+		local ans
+		read -r -p "Remove the flagged entries before syncing? [Y/n] " ans || true
+		if [[ ${ans,,} != n && ${ans,,} != no ]]; then
+			local tmp
+			tmp=$(mktemp "$DATA.XXXXXX")
+			grep -vxF -f <(printf '%s\n' "${flagged[@]}") "$DATA" >"$tmp" || true
+			mv "$tmp" "$DATA"
+			echo "Removed ${#flagged[@]} flagged entr$( ((${#flagged[@]} == 1)) && echo y || echo ies)."
+		fi
+	fi
+	sync_data "cheatsheet: edit entries"
+}
+
+# Emit rofi rows on stdout and fill the global ROW_KEYS (row index -> entry
+# index, -1 for headers) and HEADER_ROWS (comma separated header indices).
+ROW_KEYS=()
+HEADER_ROWS=""
+render_rows() {
+	local filter=$1 key meta disp i=0
+	ROW_KEYS=()
+	HEADER_ROWS=""
+	while IFS=$'\t' read -r key meta disp; do
+		ROW_KEYS+=("$key")
+		if [[ $key == -1 ]]; then
+			HEADER_ROWS+="${HEADER_ROWS:+,}$i"
+			printf '%s\0nonselectable\x1ftrue\n' "$disp"
+		else
+			printf '%s\0meta\x1f%s\n' "$disp" "$meta"
+		fi
+		i=$((i + 1))
+	done < <(jqs -r --arg f "$filter" '
+		def esc: gsub("&"; "&amp;") | gsub("<"; "&lt;") | gsub(">"; "&gt;");
+		def flat: gsub("[\t\r]"; " ");
+		def trunc($n): if length > $n then .[0:$n - 1] + "…" else . end;
+		def pad($n): if length < $n then . + (" " * ($n - length)) else . end;
+		def order: {"CLI": 0, "Paths": 1, "Snippets": 2}[.category] // 3;
+		# Zero-width spaces between letters: headers stay visible while browsing
+		# but never match a typed query, so Enter always lands on a real entry.
+		def unmatchable: split("") | join("\u200b");
+		def tag: if .category == "Snippets" then .lang elif .category == "Paths" then "Path" else "CLI" end;
+		def meta: [.category, (.lang // empty), (.content | gsub("\\s+"; " "))] | join(" ");
+		def disp:
+			(.content | split("\n")) as $lines
+			| ([$lines[] | select(test("\\S"))][0] // "" | flat | trunc(64)) as $first
+			| (if ($lines | length) > 1 then " ↵+\(($lines | length) - 1)" else "" end) as $more
+			| "<span fgalpha=\"55%\">\(tag | trunc(10) | pad(11) | esc)</span>"
+			  + ($first | esc) + "<span fgalpha=\"55%\">\($more)</span>"
+			  + (" " * ([2, 72 - ($first + $more | length)] | max))
+			  + "<i>\(.desc | flat | trunc(70) | esc)</i>";
+		to_entries
+		| map(select($f == "All" or .value.category == $f))
+		| group_by([(.value | order), (.value.lang // "" | ascii_downcase)])
+		| .[]
+		| (.[0].value | if .category == "Snippets" then "Snippets / \(.lang)" else .category end) as $title
+		| "-1\t-\t<b>\($title | unmatchable | esc)</b>",
+		  (.[] | "\(.key)\t\(.value | meta)\t\(.value | disp)")
+	')
+}
+
+copy_entry() {
+	local idx=$1 cat content
+	cat=$(jqs -r --argjson i "$idx" '.[$i].category')
+	content=$(jqs -r --argjson i "$idx" '.[$i].content')
+	[[ $cat == Paths ]] && content=$(expand_tilde "$content")
+	printf '%s' "$content" | clip_copy
+	notify "Copied to clipboard" "$(head -n1 <<<"$content")"
+}
+
+delete_entry() {
+	local idx=$1 first mfirst answer
+	first=$(jqs -r --argjson i "$idx" '.[$i].content | split("\n")[0]')
+	mfirst=${first//&/&amp;}; mfirst=${mfirst//</&lt;}; mfirst=${mfirst//>/&gt;}
+	answer=$(printf 'No\nYes, delete it\n' |
+		rofi -dmenu -i -p "Delete" -mesg "<tt>$mfirst</tt>" -no-custom "${THEME_ARGS[@]}") || return 0
+	if [[ $answer == Yes* ]]; then
+		jq_update --argjson i "$idx" 'del(.[$i])'
+		notify "Deleted from cheatsheet" "$first"
+		sync_data "cheatsheet: delete $(short "$first")"
+	fi
+}
+
+cmd_show() {
+	local query=$1 filter=All out rc row key rows
+	local -a filters=(All CLI Paths Snippets)
+	THEME_ARGS=()
+	[[ -f $THEME ]] && THEME_ARGS=(-theme "$THEME")
+	rows=$(mktemp)
+	trap 'rm -f "$rows"' EXIT
+
+	while true; do
+		local mesg="<b>$filter</b>   ·   Enter/click: copy   ·   Alt+1 All  Alt+2 CLI  Alt+3 Paths  Alt+4 Snippets   ·   Shift+Del: delete"
+		# Not a pipeline: ROW_KEYS/HEADER_ROWS must be set in this shell.
+		render_rows "$filter" >"$rows"
+		rc=0
+		out=$(rofi -dmenu -i -no-custom -markup-rows <"$rows" \
+			-p "Cheatsheet" -mesg "$mesg" \
+			-matching "$MATCHING" -format 'i	f' -filter "$query" \
+			-a "$HEADER_ROWS" -selected-row 1 \
+			-me-select-entry '' -me-accept-entry MousePrimary \
+			-kb-delete-entry '' -kb-custom-5 'Shift+Delete' \
+			"${THEME_ARGS[@]}") || rc=$?
+
+		row=${out%%$'\t'*}
+		query=${out#*$'\t'}
+		[[ $out == *$'\t'* ]] || query=""
+
+		case $rc in
+			0)
+				key=${ROW_KEYS[$row]:--1}
+				[[ $key == -1 ]] && continue
+				copy_entry "$key"
+				return
+				;;
+			10 | 11 | 12 | 13) filter=${filters[rc - 10]} ;;
+			14)
+				key=${ROW_KEYS[$row]:--1}
+				[[ $key != -1 ]] && delete_entry "$key"
+				;;
+			*) return ;;
+		esac
+	done
+}
+
+main() {
+	local action=show content="" have_content=0 desc="" lang="" cat="" use_pwd=0
+	local -a positional=()
+
+	while (($#)); do
+		case $1 in
+			-a | --add)
+				action=add
+				if (($# > 1)) && [[ $2 != -?* ]]; then
+					content=$2 have_content=1
+					shift
+				fi
+				;;
+			--add=*) action=add content=${1#*=} have_content=1 ;;
+			-d | --desc) (($# > 1)) || die "$1 needs an argument"; desc=$2; shift ;;
+			--desc=*) desc=${1#*=} ;;
+			-l | --lang) (($# > 1)) || die "$1 needs an argument"; lang=$2; shift ;;
+			--lang=*) lang=${1#*=} ;;
+			-c | --category) (($# > 1)) || die "$1 needs an argument"; cat=$2; shift ;;
+			--category=*) cat=${1#*=} ;;
+			-p | --pwd) action=add use_pwd=1 ;;
+			-f | --force) FORCE=1 ;;
+			--no-sync) SYNC=0 ;;
+			-L | --list) action=list ;;
+			-e | --edit) action=edit ;;
+			--sync) action=sync ;;
+			--langs) action=langs ;;
+			-h | --help) usage; exit 0 ;;
+			--) shift; positional+=("$@"); break ;;
+			-?*) die "unknown option '$1' (see --help)" ;;
+			*) positional+=("$1") ;;
+		esac
+		shift
+	done
+
+	command -v jq >/dev/null || die "jq is required"
+	ensure_data
+
+	case $action in
+		add)
+			if ((${#positional[@]})); then
+				((have_content)) && die "content given twice"
+				content="${positional[*]}" have_content=1
+			fi
+			cmd_add "$content" "$have_content" "$desc" "$lang" "$cat" "$use_pwd"
+			;;
+		list) cmd_list "${positional[0]:-}" ;;
+		edit) cmd_edit ;;
+		sync) sync_now "cheatsheet: sync" && echo "Synced." ;;
+		langs) cmd_langs ;;
+		show)
+			[[ -n $desc || -n $lang || -n $cat ]] && die "-d/-l/-c only make sense with --add"
+			cmd_show "${positional[*]}"
+			;;
+	esac
+}
+
+main "$@"
