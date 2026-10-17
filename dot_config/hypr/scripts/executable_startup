@@ -37,5 +37,8 @@ blueman-applet &
 bitwarden-desktop &
 /opt/Surfshark/surfshark --hidden &
 
+# 10/15/2026 pause Steam's rare-achievement shimmer (maxes fans when visible)
+pgrep -f 'python3 .*steam-no-achievement-glow' >/dev/null || ~/.local/bin/steam-no-achievement-glow &
+
 # Start mpd
 exec mpd &

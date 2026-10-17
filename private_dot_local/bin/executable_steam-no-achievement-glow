@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+# Pause Steam's rare-achievement "shimmer" animation.
+#
+# The shimmer is a rotating conic gradient with mix-blend-mode: overlay. While
+# it runs, Chromium recomposites the whole Steam window every frame (~1.5 cores
+# + ~90% iGPU on the Framework 16), which maxes the fans whenever a game page
+# with rare achievements is on screen. Steam has no setting to disable it.
+#
+# Needs Steam's CEF remote debugging (localhost:8080), enabled by the file
+# ~/.local/share/Steam/.cef-enable-remote-debugging. Runs as a daemon from
+# ~/.config/hypr/scripts/startup and re-injects whenever Steam (re)starts.
+
+import json
+import time
+import urllib.request
+
+import websocket
+
+DEBUG_URL = "http://127.0.0.1:8080/json"
+POLL_SECONDS = 10
+STYLE_ID = "no-rare-achievement-glow"
+
+# Class names seen in Steam build 1791918634; used if detection finds nothing.
+FALLBACK_SELECTORS = ["._2D_EJk8-jCnfqiwoKkOMVh", "._1Z2eJs9-zNTKcWKy4M-oDE"]
+
+INJECT_JS = """
+(() => {
+  if (document.getElementById(%(id)s)) return "present";
+  const selectors = new Set(%(fallback)s);
+  const rules = [];
+  for (const sheet of document.styleSheets) {
+    try { for (const r of sheet.cssRules) if (r.style) rules.push(r); } catch (e) {}
+  }
+  // The glow layer: infinite animation blended with overlay. Its container
+  // shares the same keyframes and carries a mask-image.
+  for (const r of rules) {
+    const s = r.style;
+    if (s.mixBlendMode !== "overlay" || s.animationIterationCount !== "infinite") continue;
+    selectors.add(r.selectorText);
+    for (const c of rules)
+      if (c.style.animationName === s.animationName && (c.style.webkitMaskImage || c.style.maskImage))
+        selectors.add(c.selectorText);
+  }
+  const el = document.createElement("style");
+  el.id = %(id)s;
+  el.textContent = [...selectors].join(",") + "{animation-play-state:paused !important}";
+  (document.head || document.documentElement).appendChild(el);
+  return "injected: " + [...selectors].join(" ");
+})()
+""" % {"id": json.dumps(STYLE_ID), "fallback": json.dumps(FALLBACK_SELECTORS)}
+
+
+def evaluate(ws_url, expression):
+    ws = websocket.create_connection(ws_url, timeout=5, suppress_origin=True)
+    try:
+        ws.send(json.dumps({"id": 1, "method": "Runtime.evaluate",
+                            "params": {"expression": expression, "returnByValue": True}}))
+        while True:
+            reply = json.loads(ws.recv())
+            if reply.get("id") == 1:
+                return reply.get("result", {}).get("result", {}).get("value")
+    finally:
+        ws.close()
+
+
+def inject_all():
+    with urllib.request.urlopen(DEBUG_URL, timeout=3) as resp:
+        targets = json.load(resp)
+    for t in targets:
+        if t.get("type") != "page" or "webSocketDebuggerUrl" not in t:
+            continue
+        # Only Steam's own UI windows, not store/community web pages.
+        if not t["url"].startswith(("about:blank", "https://steamloopback.host/")):
+            continue
+        try:
+            result = evaluate(t["webSocketDebuggerUrl"], INJECT_JS)
+        except Exception:
+            continue
+        if result and result != "present":
+            print(f"{t['title']!r}: {result}", flush=True)
+
+
+def main():
+    while True:
+        try:
+            inject_all()
+        except Exception:
+            pass  # Steam not running or debugger not up yet
+        time.sleep(POLL_SECONDS)
+
+
+if __name__ == "__main__":
+    main()
